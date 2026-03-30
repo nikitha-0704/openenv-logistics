@@ -1,3 +1,18 @@
+---
+title: OpenEnv Logistics
+emoji: 🚛
+colorFrom: blue
+colorTo: indigo
+sdk: docker
+app_port: 7860
+pinned: false
+short_description: "OpenEnv logistics simulator — FastAPI API (reset, state, step, grader)."
+tags:
+  - openenv
+  - fastapi
+  - docker
+---
+
 ======================================================================
          📦 GLOBAL LOGISTICS RESOLVER v1.0.0 - DEPLOYED 📦
 ======================================================================
@@ -105,6 +120,8 @@ Ensure `/opt/homebrew/bin` is on your **`PATH`**. If `docker build` fails pullin
 * `inference.py`: Autonomous OpenAI-based agent loop (submission / demo script).
 * `openenv.yaml`: Metadata for the OpenEnv leaderboard.
 * `pyproject.toml` / `uv.lock`: Package metadata and OpenEnv **multi-mode** validation.
+
+Space metadata follows [Spaces configuration reference](https://huggingface.co/docs/hub/spaces-config-reference).
 
 **Author:** Solo Warrior (Nikitha Thammaiah)  
 **Tag:** `openenv`
