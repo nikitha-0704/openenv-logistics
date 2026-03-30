@@ -1,0 +1,11 @@
+name: "global-logistics-resolver"
+version: "1.0.0"
+description: "High-stakes logistics simulator testing SLA prioritization and pathfinding."
+author: "Solo Warrior (Nikitha Thammaiah)"
+tasks:
+  - id: "easy"
+    description: "Operation Flash Flood: Detour around closed highways."
+  - id: "medium"
+    description: "Operation Budget Squeeze: Optimize stock transfer under strict $300 cap."
+  - id: "hard"
+    description: "Operation Cascade Failure: Prioritize VIP SLAs during a port strike."
