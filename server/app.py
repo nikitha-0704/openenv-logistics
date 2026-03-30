@@ -29,6 +29,12 @@ class ResetRequest(BaseModel):
     task_level: str = "easy"
 
 
+@app.get("/")
+def root():
+    """Space / iframe probes often hit `/`; API lives under `/reset`, `/state`, `/step`, `/docs`."""
+    return {"status": "ok", "service": "global-logistics-resolver", "docs": "/docs"}
+
+
 @app.post("/reset")
 def reset_env(req: ResetRequest):
     global current_task_level
