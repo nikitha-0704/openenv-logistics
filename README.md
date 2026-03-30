@@ -6,7 +6,7 @@ colorTo: indigo
 sdk: docker
 app_port: 7860
 pinned: false
-short_description: "OpenEnv logistics simulator — FastAPI API (reset, state, step, grader)."
+short_description: "OpenEnv logistics API: reset, state, step, grader (FastAPI)."
 tags:
   - openenv
   - fastapi
