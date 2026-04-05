@@ -72,7 +72,7 @@ The environment strictly complies with the **OpenEnv spec** using Pydantic typin
 The system is built for automated evaluation. The following variables are supported:
 * `HF_TOKEN` (preferred) or `OPENAI_API_KEY`: API credentials for the LLM.
 * `OPENENV_BASE_URL` (or `ENV_BASE_URL`): Base URL of **this** environment’s HTTP API (default `http://localhost:7860`). Use your **Hugging Face Space URL** when the server is remote.
-* `API_BASE_URL`: **OpenAI-compatible LLM base URL**. If unset and `HF_TOKEN` is set, `inference.py` defaults to **`https://router.huggingface.co/v1`**. If you use only `OPENAI_API_KEY`, omit `API_BASE_URL` to use OpenAI’s default host, or set `API_BASE_URL` explicitly (e.g. a custom gateway).
+* `API_BASE_URL`: **OpenAI-compatible LLM base URL**. In `inference.py` the default is **`https://router.huggingface.co/v1`** (hackathon checklist: defaults only on `API_BASE_URL` and `MODEL_NAME`, not `HF_TOKEN`). For **OpenAI.com** with `OPENAI_API_KEY` only, set `API_BASE_URL=https://api.openai.com/v1`.
 * `MODEL_NAME`: The target LLM (default `gpt-4o-mini`).
 
 If you previously aimed `API_BASE_URL` at this **environment** only, switch that value to **`OPENENV_BASE_URL`** so `API_BASE_URL` can mean the **LLM** host when evaluators set it that way.
