@@ -12,7 +12,9 @@ _ROOT = Path(__file__).resolve().parent.parent
 if str(_ROOT) not in sys.path:
     sys.path.insert(0, str(_ROOT))
 
-from fastapi import FastAPI, HTTPException
+import json
+
+from fastapi import FastAPI, HTTPException, Request
 from pydantic import BaseModel
 
 from env import LogisticsEnv
@@ -25,10 +27,6 @@ env = LogisticsEnv()
 current_task_level = "easy"
 
 
-class ResetRequest(BaseModel):
-    task_level: str = "easy"
-
-
 @app.get("/")
 def root():
     """Space / iframe probes often hit `/`; API lives under `/reset`, `/state`, `/step`, `/docs`."""
@@ -36,9 +34,19 @@ def root():
 
 
 @app.post("/reset")
-def reset_env(req: ResetRequest):
+async def reset_env(request: Request):
+    """Accept empty body, `{}`, or `null` — hackathon graders may POST with no JSON body."""
     global current_task_level
-    current_task_level = req.task_level
+    task_level = "easy"
+    try:
+        raw = await request.body()
+        if raw:
+            body = json.loads(raw)
+            if isinstance(body, dict) and body.get("task_level") is not None:
+                task_level = str(body["task_level"])
+    except (json.JSONDecodeError, TypeError, ValueError):
+        pass
+    current_task_level = task_level
     state = env.reset(task_level=current_task_level)
     return {"state": state}
 
