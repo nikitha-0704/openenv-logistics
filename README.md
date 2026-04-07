@@ -107,10 +107,10 @@ Ensure `/opt/homebrew/bin` is on your **`PATH`**. If `docker build` fails pullin
 
 | Task | Scripted Optimum | LLM Typical (GPT-4o-mini) | Logic Demonstrated |
 | :--- | :---: | :---: | :--- |
-| **Easy** | 1.0 / 1.0 | 1.0 / 1.0 | Identified detour route; met <14h deadline. |
-| **Medium** | 0.67 / 1.0 | 0.67 / 1.0 | Optimized transfer; $100 budget retention. |
-| **Hard** | 1.0 / 1.0 | 0.70 / 1.0 | Parallel truck deployment vs. VIP priority. |
-> **Note:** The **Scripted optimum** column matches `test_local.py` / optimal play; **`GET /baseline`** returns these values. **LLM typical** is approximate zero-shot **GPT-4o-mini** performance.
+| **Easy** | ~0.999 | ~0.999 | Identified detour route; met <14h deadline. |
+| **Medium** | ~0.666 | ~0.666 | Optimized transfer; $100 budget retention. |
+| **Hard** | ~0.999 | ~0.70 | Parallel truck deployment vs. VIP priority. |
+> **Note:** Grader and **`GET /baseline`** report scores in the **open interval (0, 1)** (mapped from raw [0,1] for platform validation). **Scripted optimum** matches `test_local.py` / optimal play. **LLM typical** is approximate zero-shot **GPT-4o-mini** performance.
 
 ## 📂 Project Structure
 * `env.py`: The "Ops Lead" physics engine.

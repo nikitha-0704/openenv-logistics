@@ -19,7 +19,7 @@ from pydantic import BaseModel
 
 from env import LogisticsEnv
 from models import LogisticsAction, LogisticsReward
-from tasks import LogisticsGrader
+from tasks import LogisticsGrader, open_unit_score
 
 app = FastAPI(title="OpenEnv - Global Supply Chain & Logistics Resolver")
 
@@ -91,11 +91,12 @@ def get_grader_score():
 
 @app.get("/baseline")
 def run_baseline():
+    # Same raw optimums as before, mapped to (0,1) exclusive via open_unit_score.
     return {
         "baseline_scores": {
-            "easy": 1.0,
-            "medium": 0.67,
-            "hard": 1.0,
+            "easy": open_unit_score(1.0),
+            "medium": open_unit_score(2 / 3),  # ~$100 remaining on $300 cap scripted optimum
+            "hard": open_unit_score(1.0),
         }
     }
 

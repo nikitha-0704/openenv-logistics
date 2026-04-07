@@ -46,49 +46,56 @@ def get_task_setup(task_level: str, base_state: dict) -> dict:
     return state
 
 # ==========================================
-# 2. THE DETERMINISTIC GRADERS (0.0 - 1.0)
+# 2. THE DETERMINISTIC GRADERS (raw [0,1], reported in open interval (0,1))
 # ==========================================
+def open_unit_score(raw: float) -> float:
+    """Map a raw score in [0, 1] to (0, 1) exclusive (hackathon / LiteLLM validators)."""
+    raw = max(0.0, min(1.0, float(raw)))
+    lo, hi = 1e-3, 1.0 - 1e-3
+    return round(lo + raw * (hi - lo), 4)
+
+
 class LogisticsGrader:
     @staticmethod
     def evaluate(task_level: str, final_state: dict) -> float:
         """Evaluates agent performance based on mission-specific KPIs."""
         orders = final_state.get("active_orders", [])
         time_elapsed = final_state.get("current_time_hours", 0)
-        
+
         if not orders:
-            return 0.0
+            return open_unit_score(0.0)
 
         if task_level == "easy":
             order = orders[0]
             if order["fulfilled"]:
-                # High score (1.0) for efficiency (under 14h), standard (0.8) for just making the deadline.
-                return 1.0 if time_elapsed <= 14 else 0.8
-            return 0.0
+                # Raw 1.0 for efficiency (under 14h), 0.8 for just making the deadline.
+                raw = 1.0 if time_elapsed <= 14 else 0.8
+                return open_unit_score(raw)
+            return open_unit_score(0.0)
 
-        elif task_level == "medium":
+        if task_level == "medium":
             order = orders[0]
             if not order["fulfilled"]:
-                return 0.0
-            # 0.5 base for fulfillment + up to 0.5 bonus for budget efficiency.
+                return open_unit_score(0.0)
             budget_remaining = max(0, final_state["budget"])
             budget_score = (budget_remaining / 300.0) * 0.5
-            return round(0.5 + budget_score, 2)
+            raw = round(0.5 + budget_score, 2)
+            return open_unit_score(raw)
 
-        elif task_level == "hard":
-            # Multi-objective scoring
+        if task_level == "hard":
             vip_order = next((o for o in orders if o.get("is_vip")), None)
             std_order = next((o for o in orders if not o.get("is_vip")), None)
-            
+
             score = 0.0
             if vip_order and vip_order["fulfilled"]:
-                score += 0.7  # VIP is the priority
+                score += 0.7
             if std_order and std_order["fulfilled"]:
-                score += 0.3  # Standard is a secondary objective
-                
-            # Debt penalty: Logistic Leads must manage company funds!
+                score += 0.3
+
             if final_state["budget"] < 0:
                 score -= 0.4
-                
-            return max(0.0, min(1.0, round(score, 2)))
 
-        return 0.0
+            raw = max(0.0, min(1.0, round(score, 2)))
+            return open_unit_score(raw)
+
+        return open_unit_score(0.0)
