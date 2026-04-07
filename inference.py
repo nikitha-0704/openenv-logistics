@@ -1,14 +1,17 @@
 """
 LLM + logistics env harness.
 
-Required env (hackathon checklist):
-  API_BASE_URL   OpenAI-compatible LLM base URL (default set in code)
-  MODEL_NAME     Model id (default set in code)
-  HF_TOKEN       API key — no default; set in environment / Space secrets
+Submission / Phase 2 (LiteLLM proxy — required for automated grading):
+  API_BASE_URL   Injected by the platform; OpenAI client base_url (no bypass)
+  API_KEY        Injected LiteLLM proxy key (use this, not personal provider keys)
+  MODEL_NAME     Often injected; optional default below for local runs
 
-Optional:
-  OPENAI_API_KEY  Local/dev fallback when using OpenAI’s API instead of HF_TOKEN
-  OPENENV_BASE_URL / ENV_BASE_URL  This simulator’s HTTP API (not the LLM host)
+Local development (when API_BASE_URL + API_KEY are not both set):
+  API_BASE_URL   Optional default Hugging Face router
+  HF_TOKEN or OPENAI_API_KEY
+
+Also:
+  OPENENV_BASE_URL / ENV_BASE_URL  Logistics HTTP API (not the LLM host)
   LOCAL_IMAGE_NAME  Only if using from_docker_image() (unused here)
 
 Stdout logs for validators: [START] / [STEP] / [END] with key=value fields.
@@ -22,8 +25,6 @@ import requests
 from openai import OpenAI
 from tasks import SCENARIOS
 
-# Defaults only for API_BASE_URL and MODEL_NAME — not for HF_TOKEN (checklist).
-API_BASE_URL = os.getenv("API_BASE_URL", "https://router.huggingface.co/v1").rstrip("/")
 MODEL_NAME = os.getenv("MODEL_NAME", "gpt-4o-mini")
 HF_TOKEN = os.getenv("HF_TOKEN")
 
@@ -37,13 +38,20 @@ OPENENV_BASE_URL = (
     or "http://localhost:7860"
 )
 
-_api_key = HF_TOKEN or os.getenv("OPENAI_API_KEY")
-if not _api_key:
-    raise ValueError(
-        "CRITICAL: Set HF_TOKEN (required for submission) or OPENAI_API_KEY for local OpenAI runs."
-    )
-
-client = OpenAI(base_url=API_BASE_URL, api_key=_api_key)
+# Phase 2: graders inject API_BASE_URL + API_KEY for LiteLLM — must use them when present.
+if "API_BASE_URL" in os.environ and "API_KEY" in os.environ:
+    API_BASE_URL = os.environ["API_BASE_URL"].rstrip("/")
+    MODEL_NAME = os.environ.get("MODEL_NAME", MODEL_NAME)
+    client = OpenAI(base_url=API_BASE_URL, api_key=os.environ["API_KEY"])
+else:
+    API_BASE_URL = os.getenv("API_BASE_URL", "https://router.huggingface.co/v1").rstrip("/")
+    _local_key = HF_TOKEN or os.getenv("OPENAI_API_KEY")
+    if not _local_key:
+        raise ValueError(
+            "Set API_BASE_URL and API_KEY for submission (LiteLLM proxy), or for local runs "
+            "set HF_TOKEN or OPENAI_API_KEY."
+        )
+    client = OpenAI(base_url=API_BASE_URL, api_key=_local_key)
 
 SCHEMA = """{"action_type": "check_network"|"load_truck"|"route_truck"|"wait", "truck_id": "str?", "warehouse": "str?", "amount": "int?", "route_id": "str?", "hours": "int?"}"""
 
