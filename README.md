@@ -183,6 +183,18 @@ Add `--llm` to also run `inference.py` and `inference_multi.py` (needs `OPENAI_A
 4. Outputs in `OUTPUT_DIR`: `sft_loss_curve.png`, `baseline_vs_trained_grader.png`, `grader_eval_summary.json` — copy them into `docs/plots/` and they appear in this README's *Results* section automatically.
 5. (Optional) Run cell 12 to launch a short **GRPO** loop with `GET /grader` as the reward function — outputs `grpo_reward_curve.png`.
 
+**Local training (same pipeline as the notebook, no Colab):**
+
+```bash
+pip install -e ".[train]"               # trl, peft, torch, transformers, …
+# If the download times out: pip install --default-timeout=1000 -e ".[train]"
+# If pip reports ResolutionImpossible (datasets / fsspec / aiohttp): pull latest pyproject.toml — `[train]` pins a compatible `fsspec[http]` range.
+export OPENENV_BASE_URL=https://<your-space>.hf.space
+export HF_TOKEN=hf_...                 # to download the student model (Qwen2.5-0.5B)
+python -m training.train_driver_sft    # → docs/plots/sft_loss_curve.png, baseline_vs_trained_grader.png, grader_eval_summary.json
+# LoRA weights: training/outputs/sft/driver_lora/  (gitignored; add --skip-eval for a faster smoke test)
+```
+
 **Local CLI sanity:**
 
 ```bash
@@ -245,6 +257,7 @@ docker version          # should show Client + Server
 | `inference_multi.py`             | Hierarchical Dispatcher + per-truck Drivers + message bus + re-plan.                     |
 | `agents/`                        | `dispatcher.py`, `driver.py`, `bus.py`, shared `llm.py`.                                 |
 | `training/collect_and_plot.py`   | Rollout harness (scripted / single-LLM / multi-LLM) + grouped bar chart with SEM.         |
+| `training/train_driver_sft.py`   | CLI: scripted trajectories → TRL SFT + LoRA → loss + baseline vs trained grader plots.   |
 | `notebooks/train_driver_trl.ipynb` | Trajectory collection → filtered SFT (TRL + LoRA) → baseline-vs-trained eval → optional GRPO. |
 | `scripts/demo.sh`                | Push-button demo: boots adversarial server + runs `inference_multi.py`.                   |
 | `docs/plots/`                    | Committed PNGs + JSON summaries (the artifacts judges actually open).                      |

@@ -13,19 +13,32 @@ dependencies = [
     "fastapi>=0.104.0",
     "uvicorn[standard]>=0.24.0",
     "pydantic>=2.5.0",
-    "requests>=2.31.0",
+    # datasets (train extra) needs requests>=2.32.2; avoids resolver churn with HF stack
+    "requests>=2.32.2",
     "openai>=1.12.0",
 ]
 
 [project.optional-dependencies]
 plots = ["matplotlib>=3.8"]
+train = [
+    "matplotlib>=3.8",
+    "torch>=2.0",
+    "transformers>=4.44",
+    # datasets 2.2x caps fsspec[http]<=2024.6.1; huggingface_hub allows newer fsspec → pin explicitly
+    "fsspec[http]>=2023.5.0,<=2024.6.1",
+    "aiohttp>=3.9.0,<4",
+    "datasets>=2.20,<2.22",
+    "accelerate>=0.33",
+    "peft>=0.12",
+    "trl>=0.11.0",
+]
 
 [project.scripts]
 server = "server.app:main"
 
 [tool.setuptools.packages.find]
 where = ["."]
-include = ["server*"]
+include = ["server*", "training*"]
 
 [tool.setuptools]
 py-modules = ["env", "models", "tasks"]

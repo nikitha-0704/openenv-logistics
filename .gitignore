@@ -32,3 +32,6 @@ htmlcov/
 
 # Episodic memory tail (inference.py — optional Theme 4 demo)
 .episode_memory.txt
+
+# TRL / LoRA training outputs (large; regenerate with training/train_driver_sft.py)
+training/outputs/
