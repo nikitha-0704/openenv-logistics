@@ -1,0 +1,14 @@
+{
+  "openenv_base_url": "https://nikitha04-openenv-logistics.hf.space",
+  "student_model": "Qwen/Qwen2.5-0.5B-Instruct",
+  "baseline_grader": {
+    "easy": 0.001,
+    "medium": 0.001,
+    "hard": 0.001
+  },
+  "trained_grader": {
+    "easy": 0.001,
+    "medium": 0.001,
+    "hard": 0.001
+  }
+}

@@ -1,8 +1,8 @@
 # Problem Statement & Design — Global Logistics Resolver (OpenEnv)
 
 **Author:** Nikitha Thammaiah · Solo
-**Hackathon themes hit (per opening-ceremony deck):**
-**(Super) Long-Horizon Planning** (primary) · **Multi-agent interactions** (secondary) · **World modeling** (tertiary).
+**Hackathon themes hit:**
+**Long-Horizon Planning** (primary) · **Multi-agent interactions** (secondary) · **World modeling** (tertiary).
 
 > **What's novel:** A **hierarchical multi-agent** policy (Dispatcher + per-truck Drivers, an inter-agent message bus, and a re-plan trigger) operating over a **partially-observable, adversarially-perturbed** OpenEnv environment with **composable `openenv.core` rubrics**, feeding a **TRL + LoRA** training pipeline that consumes the same trajectories the agents produce.
 
