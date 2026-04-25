@@ -32,6 +32,20 @@ tags:
 
 ---
 
+## 🏆 Headline result
+
+On the **Hard task** — VIP delivery + adversarial port strike + budget squeeze + partial observability — three policies, three seeds, SEM error bars:
+
+| Policy                                              | Terminal `/grader` score |
+| --------------------------------------------------- | ------------------------ |
+| Scripted optimum (no LLM, hand-coded ceiling)       | **0.999**                |
+| Single-agent LLM (`inference.py`)                   | **0.001** ← grader floor |
+| **Hierarchical multi-agent LLM (`inference_multi.py`)** | **🏆 0.467**             |
+
+Hierarchy + inter-agent messaging + a re-plan trigger recovers **~47% of the scripted optimum on the hardest task purely from prompt-time architecture — no fine-tuning.** Same LLM, same context budget, just decomposed. Full chart, methodology, and SFT pipeline in [§ Results](#-results-improvement-evidence) below.
+
+---
+
 ## 🚀 Try it in 30 seconds
 
 ```bash
