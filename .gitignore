@@ -29,3 +29,6 @@ htmlcov/
 # Local env / secrets
 .env
 .env.local
+
+# Episodic memory tail (inference.py — optional Theme 4 demo)
+.episode_memory.txt

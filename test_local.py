@@ -12,8 +12,9 @@ def run_dummy_task(task_level):
 
     # 2. Hardcoded perfect actions for each specific task
     if task_level == "easy":
-        # Easy: Route is blocked, must go North -> South -> East
+        # Easy: Route is blocked, must go North -> South -> East (check_network first for grader + telemetry)
         actions = [
+            {"action_type": "check_network"},
             {"action_type": "load_truck", "truck_id": "T101", "warehouse": "North", "amount": 20},
             {"action_type": "route_truck", "truck_id": "T101", "route_id": "North_to_South"},
             {"action_type": "wait", "hours": 5},
@@ -25,6 +26,7 @@ def run_dummy_task(task_level):
     elif task_level == "medium":
         # Medium: Move 50 units direct to East under a strict $300 budget
         actions = [
+            {"action_type": "check_network"},
             {"action_type": "load_truck", "truck_id": "T101", "warehouse": "North", "amount": 50},
             {"action_type": "route_truck", "truck_id": "T101", "route_id": "North_to_East"},
             {"action_type": "wait", "hours": 10}
@@ -33,6 +35,7 @@ def run_dummy_task(task_level):
     # --- Hard branch of test_local.py ---
     elif task_level == "hard":
         actions = [
+            {"action_type": "check_network"},
             # 1. T101 picks up VIP cargo at North
             {"action_type": "load_truck", "truck_id": "T101", "warehouse": "North", "amount": 40},
             {"action_type": "route_truck", "truck_id": "T101", "route_id": "North_to_East"},

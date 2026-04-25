@@ -1,7 +1,11 @@
 name: "global-logistics-resolver"
 version: "1.0.0"
-description: "High-stakes logistics simulator testing SLA prioritization and pathfinding."
+description: "Hierarchical multi-agent OpenEnv: partial-obs logistics sim with composable rubrics + TRL/LoRA + GRPO training pipeline."
 author: "Solo Warrior (Nikitha Thammaiah)"
+themes:
+  - "long-horizon-planning"
+  - "multi-agent-interactions"
+  - "world-modeling"
 tasks:
   - id: "easy"
     description: "Operation Flash Flood: Detour around closed highways."

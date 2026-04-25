@@ -1,11 +1,22 @@
 from pydantic import BaseModel, Field
 from typing import Literal, Optional, Dict, Any
 
+# OpenEnv-core base classes (Pydantic models with validation + extra="forbid"
+# on Action, extra="allow" on State). Subclassing them is what `openenv validate`
+# expects of an OpenEnv-compliant environment.
+from openenv.core import Action as _CoreAction
+from openenv.core import Observation as _CoreObservation
+from openenv.core import State as _CoreState
+
 # 1. THE ACTION SPACE (What the AI can do)
 
-class LogisticsAction(BaseModel):
-    """The strict set of tools the AI can use to solve the logistics crisis."""
-    
+class LogisticsAction(_CoreAction):
+    """The strict set of tools the AI can use to solve the logistics crisis.
+
+    Inherits OpenEnv's `Action`: Pydantic model with `extra="forbid"` (no
+    silent typos in tool names) and an optional `metadata` dict.
+    """
+
     action_type: Literal[
         "check_network",      # Look at the current state/alerts
         "load_truck",         # Put inventory into a truck
@@ -27,9 +38,13 @@ class LogisticsAction(BaseModel):
 
 # 2. THE OBSERVATION SPACE (What the AI sees)
 
-class LogisticsObservation(BaseModel):
-    """What the environment returns immediately after an action."""
-    
+class LogisticsObservation(_CoreObservation):
+    """What the environment returns immediately after an action.
+
+    Inherits OpenEnv's `Observation` (`done`, `reward`, `metadata` fields)
+    and adds the logistics-specific success/message/data payload.
+    """
+
     success: bool = Field(..., description="Did the action execute successfully?")
     message: str = Field(..., description="Text feedback (e.g., 'Truck T101 routed successfully' or 'Error: Route Closed').")
     data: Optional[Dict[str, Any]] = Field(None, description="JSON payload containing requested network info.")
@@ -45,7 +60,18 @@ class LogisticsReward(BaseModel):
 
 class RewardInfo(BaseModel):
     """Tracks partial progress and budget penalties."""
-    
+
     task_completed: bool = Field(default=False, description="Is the primary objective met?")
     budget_remaining: float = Field(..., description="How much money is left.")
     penalty_incurred: float = Field(default=0.0, description="Penalties for invalid actions or delays.")
+
+
+# 5. STATE (OpenEnv: introspectable environment state)
+
+class LogisticsState(_CoreState):
+    """Snapshot of the env's full simulation state.
+
+    `_CoreState` allows extra fields, so we can carry the live `dict` shape
+    (warehouses / routes / trucks / orders / alerts / mission_brief / …)
+    without re-declaring every key while still gaining episode_id + step_count.
+    """

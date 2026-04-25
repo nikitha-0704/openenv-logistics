@@ -47,13 +47,13 @@ async def reset_env(request: Request):
     except (json.JSONDecodeError, TypeError, ValueError):
         pass
     current_task_level = task_level
-    state = env.reset(task_level=current_task_level)
-    return {"state": state}
+    env.reset(task_level=current_task_level)
+    return {"state": env.public_state()}
 
 
 @app.get("/state")
 def get_state():
-    return {"state": env.state()}
+    return {"state": env.public_state()}
 
 
 @app.get("/health")

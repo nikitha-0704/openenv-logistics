@@ -20,6 +20,7 @@ Stdout logs for validators: [START] / [STEP] / [END] with key=value fields.
 import json
 import os
 import time
+from pathlib import Path
 
 import requests
 from openai import OpenAI
@@ -55,6 +56,28 @@ else:
 
 SCHEMA = """{"action_type": "check_network"|"load_truck"|"route_truck"|"wait", "truck_id": "str?", "warehouse": "str?", "amount": "int?", "route_id": "str?", "hours": "int?"}"""
 
+# Theme 4 — optional episodic tail from prior graded runs (gitignored `.episode_memory.txt`)
+_EPISODE_MEMORY_PATH = Path(__file__).resolve().parent / ".episode_memory.txt"
+_EPISODE_MEMORY_MAX_CHARS = 2000
+
+
+def _load_episode_memory() -> str:
+    try:
+        if not _EPISODE_MEMORY_PATH.is_file():
+            return ""
+        raw = _EPISODE_MEMORY_PATH.read_text(encoding="utf-8", errors="replace")
+        return raw[-_EPISODE_MEMORY_MAX_CHARS:] if len(raw) > _EPISODE_MEMORY_MAX_CHARS else raw
+    except OSError:
+        return ""
+
+
+def _append_episode_memory(line: str) -> None:
+    try:
+        with open(_EPISODE_MEMORY_PATH, "a", encoding="utf-8") as f:
+            f.write(line.rstrip() + "\n")
+    except OSError:
+        pass
+
 
 def _kv(*pairs: tuple[str, str]) -> str:
     """Space-separated key=value for validator lines; quote values that need it."""
@@ -75,13 +98,30 @@ def _action_compact(action: dict) -> str:
 
 def run_task(task: str) -> float:
     print(f"[START] {_kv(('task', task), ('env', OPENENV_BASE_URL))}", flush=True)
-    requests.post(f"{OPENENV_BASE_URL}/reset", json={"task_level": task})
-    brief = SCENARIOS.get(task, "Solve the logistics crisis.")
+    reset_resp = requests.post(f"{OPENENV_BASE_URL}/reset", json={"task_level": task}).json()
+    state0 = reset_resp.get("state") or {}
+    brief = state0.get("mission_brief") or SCENARIOS.get(task, "Solve the logistics crisis.")
+    constraints = state0.get("instruction_constraints") or []
+    mem = _load_episode_memory()
+    constraint_block = "\n".join(f"- {c}" for c in constraints) if constraints else "- (none listed)"
+    memory_block = (
+        f"\nPast graded runs (tail, optional context):\n{mem}\n" if mem.strip() else ""
+    )
+    telem = state0.get("telemetry_visibility", "partial")
+    obs_hint = (
+        "\nObservation: `telemetry_visibility` may be `partial` until you call check_network; "
+        "then route statuses and order deadlines become precise.\n"
+        if telem == "partial"
+        else ""
+    )
 
     messages = [
         {
             "role": "system",
-            "content": f"Brief: {brief}\nSchema: {SCHEMA}\nOutput ONLY raw JSON actions.",
+            "content": (
+                f"Mission brief:\n{brief}\n\nHard constraints:\n{constraint_block}"
+                f"{memory_block}{obs_hint}\nSchema: {SCHEMA}\nOutput ONLY raw JSON actions."
+            ),
         }
     ]
 
@@ -152,6 +192,9 @@ def run_task(task: str) -> float:
     print(
         f"[END] {_kv(('task', task), ('success', str(episode_done).lower()), ('steps', str(step_ix)), ('rewards', rewards_lit), ('score', str(score)))}",
         flush=True,
+    )
+    _append_episode_memory(
+        f"task={task} success={episode_done} steps={step_ix} score={score} rewards={rewards_lit}"
     )
     return float(score)
 

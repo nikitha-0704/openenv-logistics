@@ -6,122 +6,251 @@ colorTo: indigo
 sdk: docker
 app_port: 7860
 pinned: false
-short_description: "OpenEnv logistics API: reset, state, step, grader (FastAPI)."
+short_description: "Hierarchical multi-agent OpenEnv logistics sim with composable rubrics + TRL training."
 tags:
   - openenv
   - fastapi
   - docker
+  - multi-agent
+  - long-horizon-planning
+  - world-modeling
+  - trl
 ---
 
-======================================================================
-         📦 GLOBAL LOGISTICS RESOLVER v1.0.0 - DEPLOYED 📦
-======================================================================
-  STATUS:   [OPERATIONAL]
-  GRAPH:    [SYNCED: S-N Route Active]
-  GRADERS:  [DETERMINISTIC]
-  LLM:      [GPT-4O-MINI VALIDATED]
-  AUTHOR:   [NIKITHA THAMMAIAH / SOLO WARRIOR]
-======================================================================
+# 🚛 Global Logistics Resolver — Hierarchical Multi-Agent OpenEnv
 
-# 🚛 Global Logistics Resolver: Ops-Lead Simulator (OpenEnv)
+> *"It's 2 AM, the N-E Highway is underwater, and the VIP client at East just called for an update. You have two trucks, a shrinking budget, and 18 hours to fix it. What's the move?"*
 
-> **"It's 2 AM, the N-E Highway is underwater, and the VIP client at East just called for an update. You have two trucks, a shrinking budget, and 18 hours to fix it. What’s the move?"**
+**What's novel** — a **hierarchical multi-agent** policy (Dispatcher + per-truck Drivers, an inter-agent message bus, and a re-plan trigger) operating over a **partially-observable, adversarially-perturbed** OpenEnv environment with **composable `openenv.core` rubrics**, feeding a **TRL + LoRA** training pipeline that consumes the same trajectories the agents produce.
 
-The **Global Logistics Resolver** is a deterministic Reinforcement Learning (RL) environment designed to stress-test an agent's **spatial reasoning**, **SLA prioritization**, and **resource optimization** in high-stakes supply chain scenarios.
+**Hackathon themes hit (per the opening-ceremony deck):**
+- 🟦 **(Super) Long-Horizon Planning** — strategic resource management across many tool calls under SLA + budget
+- 🟪 **Multi-agent interactions** — Dispatcher / Driver / message bus / re-plan = enterprise application pattern
+- 🟩 **World modeling** — partial telemetry forces explicit `check_network` belief-state updates
 
----
-
-## 🎯 The Hook: Why This Environment?
-Most LLM benchmarks focus on text generation or simple logic. This environment fills a crucial gap by forcing agents to act as **On-Call Ops Leads**. It requires:
-* **Arithmetic Precision:** Managing a dwindling $300–$500 budget where every mile costs money.
-* **Spatial Detouring:** Navigating graph-based networks when primary routes suffer "Cascade Failures."
-* **Value-Based Logic:** Deciding whether to incur a budget penalty to save a VIP contract.
+📄 **[Problem statement & design](./PROBLEM_STATEMENT.md)** · 📓 **[Training notebook](./notebooks/train_driver_trl.ipynb)** · 🛰️ **Live HF Space:** `https://<your-space>.hf.space` · 🎬 **[Push-button demo](./scripts/demo.sh)**
 
 ---
 
-## 🛠️ Action & Observation Spaces
-The environment strictly complies with the **OpenEnv spec** using Pydantic typing for 100% parseable interactions.
+## 🚀 Try it in 30 seconds
 
-### **Action Space:**
-* `check_network`: Syncs full telemetry, including route statuses and SLA countdowns.
-* `load_truck`: Maneuvers inventory from warehouses into specific assets (T101/T102).
-* `route_truck`: Dispatches assets via the graph. Costs budget and takes real-time hours.
-* `wait`: Advances the simulation. Processes arrivals and checks for order fulfillment.
+Against the live Hugging Face Space (no install, just `curl` — replace `<your-space>` with your Space's hostname):
 
-### **Observation Space:**
-* **News Ticker:** Real-time status updates (e.g., `[SYSTEM_OK] Fuel prices stable.`)
-* **Incident IDs:** Every crisis is tracked via unique IDs (e.g., `INC-2026-HAR-01`).
-* **SLA Tracking:** Explicit feedback on how many hours remain before an order fails.
+```bash
+SPACE=https://<your-space>.hf.space
 
-### **Reward & step metadata**
-* **`reward`:** Pydantic **`LogisticsReward`** — JSON shape `{"value": <float>}` for the shaped step reward.
-* **`info`:** **`RewardInfo`** — budget remaining, task completion flag, penalties (see `models.py`).
+# 1. Reset to the "easy" task and read the partial public state
+curl -s -X POST "$SPACE/reset" -H 'content-type: application/json' \
+     -d '{"task_level":"easy"}' | jq .
+
+# 2. Sync telemetry (unlocks route status + SLA precision)
+curl -s -X POST "$SPACE/step" -H 'content-type: application/json' \
+     -d '{"action_type":"check_network"}' | jq .
+
+# 3. Read the terminal grader score (open-interval 0..1)
+curl -s "$SPACE/grader" | jq .
+```
+
+Or run it locally — no LLM key required:
+
+```bash
+pip install -e ".[plots]"
+python -m server.app                                        # http://localhost:7860/docs
+python -m training.collect_and_plot --seeds 3 --out docs/plots
+```
 
 ---
 
-## 🎭 Scenarios (The Crises)
-1. **Easy - Operation Flash Flood:** The primary N-E route is closed. The agent must successfully detour through the South hub. *Tests: Pathfinding.*
-2. **Medium - Operation Budget Squeeze:** Stock is zero at the destination. The agent must transfer 50 units using an optimal route without exceeding a strict $300 cap. *Tests: Cost Optimization.*
-3. **Hard - Operation Cascade Failure:** A regional port strike has paralyzed the South hub. The agent must manage two trucks to prioritize a VIP SLA while a secondary standard order also requires attention. *Tests: Prioritization & Parallel Processing.*
+## 📊 Results (improvement evidence)
+
+All plots generated by `training/collect_and_plot.py` and `notebooks/train_driver_trl.ipynb`; both label axes with units, save as PNG, and live under `docs/plots/`.
+
+![Scripted optimum vs. single-agent LLM vs. hierarchical multi-agent LLM](docs/plots/baseline_vs_multi.png)
+*Mean **terminal `/grader` score** per task (3 seeds; SEM error bars). Scripted = `test_local.py` optimum (no LLM); single-agent LLM = `inference.py`; multi-agent LLM = `inference_multi.py` (Dispatcher + per-truck Drivers + message bus + re-plan).*
+
+![SFT loss curve from notebooks/train_driver_trl.ipynb](docs/plots/sft_loss_curve.png)
+*Cross-entropy SFT loss vs. optimizer step on filtered teacher trajectories (Qwen2.5-0.5B-Instruct + LoRA r=8, T4 in Colab / HF Jobs).*
+
+![Base student vs. base + LoRA on the same /grader rollout harness](docs/plots/baseline_vs_trained_grader.png)
+*Same student, same prompts, same env: **base vs. base + LoRA after SFT**. Score is the env's own `GET /grader` (0–1 open-interval). Numbers backing this chart live in `docs/plots/grader_eval_summary.json`.*
+
+> ℹ️ **Reproduce the plots:** see [§ Reproducibility](#-reproducibility) below. The notebook also has an optional **GRPO** cell that uses the env's `GET /grader` directly as the reward function — same training loop the deck recommends ("training loop should connect to your environment, not a static dataset").
 
 ---
 
-## 🚀 Setup & Usage
+## 🛠️ Action & observation spaces
 
-### **Evaluation Harness (Environment Variables)**
-The system is built for automated evaluation. The following variables are supported:
-* **`API_BASE_URL` + `API_KEY` (submission / LiteLLM):** When both are set, `inference.py` builds the OpenAI client with **`base_url=os.environ["API_BASE_URL"]`** and **`api_key=os.environ["API_KEY"]`** so Phase‑2 style graders see traffic on the provided proxy. Do not substitute your own provider URL/key when the platform injects these.
-* **Local LLM:** If `API_KEY` is not set, use `HF_TOKEN` or `OPENAI_API_KEY` with optional `API_BASE_URL` (default HF router or set `https://api.openai.com/v1` for OpenAI).
-* `OPENENV_BASE_URL` (or `ENV_BASE_URL`): Base URL of **this** environment’s HTTP API (default `http://localhost:7860`). Use your **Hugging Face Space URL** when the server is remote.
-* `MODEL_NAME`: The target LLM (default `gpt-4o-mini`).
+OpenEnv-compliant: `LogisticsEnv` subclasses `openenv.core.Environment[LogisticsAction, LogisticsObservation, LogisticsState]`. Actions are typed Pydantic models with `extra="forbid"` so unknown fields are rejected.
 
-If you previously aimed `API_BASE_URL` at this **environment** only, switch that value to **`OPENENV_BASE_URL`** so `API_BASE_URL` can mean the **LLM** host when evaluators set it that way.
+**Action space** (`models.LogisticsAction`):
+- `check_network` — sync full telemetry (route statuses, SLA countdowns).
+- `load_truck` — move inventory from a warehouse into T101 / T102.
+- `route_truck` — dispatch a truck along a graph edge (costs budget + hours).
+- `wait` — advance the simulation; processes arrivals + checks for fulfillment.
 
-### **Local server (OpenEnv layout)**
-1. `pip install -e .` (or `uv sync` if you use uv).
-2. Start the API: **`uv run server`** or **`python -m server.app`** (ASGI app: **`server.app:app`**).
-3. Optional: **`openenv validate .`** — should report **ready for multi-mode deployment**.
+**Observation space** (`models.LogisticsObservation`, inherits `openenv.core.Observation` so it carries `done` / `reward` / `metadata` natively):
+- **Partial telemetry by default.** `POST /reset` and `GET /state` return a public observation with route `status: "unknown"` and order `deadline: null` until the agent runs `check_network`; afterwards `telemetry_visibility` is `"full"` and SLA countdowns are exposed in `observation.data`.
+- **Mission brief & instruction constraints** — every reset injects `mission_brief` and `instruction_constraints` into the state for LLM harnesses (long-horizon planning + instruction following).
+- **News ticker + incident IDs** — flavor text plus stable ids like `INC-2026-HAR-01` for log readability.
 
-### **Installing Docker on macOS (no Docker Desktop password prompt)**
-If `brew install --cask docker` stops at `sudo`, use **Colima** + the Docker CLI instead:
+**Reward & info:**
+- `reward.value`: shaped step reward (rich, not 0/1 at the end).
+- `info`: `RewardInfo` — `task_completed`, `budget_remaining`, `penalty_incurred`.
+
+---
+
+## 🎭 Scenarios (the crises)
+
+1. **Easy — Operation Flash Flood:** primary N→E route is closed; detour via the South hub. *Tests:* pathfinding under a closed edge.
+2. **Medium — Operation Budget Squeeze:** zero stock at destination; transfer 50 units under a strict $300 cap. *Tests:* cost-aware routing.
+3. **Hard — Operation Cascade Failure:** port strike paralyses the South hub; two trucks, two orders (VIP + standard), shared $500 budget. *Tests:* prioritization + parallel coordination.
+
+Optional **`ADVERSARIAL=1`** mode injects a one-shot `[BREAKING]` event mid-episode that re-locks telemetry and (for medium/hard) closes `North_to_East` — the harness's re-plan trigger handles it.
+
+---
+
+## 🧮 Composable reward rubrics
+
+Per the deck — *"composable rubrics > monolithic scoring"* — the grader is built from `openenv.core.rubrics.Rubric` atoms:
+
+| Atom                    | Signal                                                                                  |
+| ----------------------- | --------------------------------------------------------------------------------------- |
+| `DeliveryCompletion`    | 1.0 iff a named/VIP/standard order is fulfilled                                         |
+| `TimeEfficiency`        | 1.0 if delivered in the efficient window, 0.8 by deadline, 0 if missed                  |
+| `BudgetRetention`       | `max(0, budget) / cap` clipped to [0, 1]                                                |
+| `InsolvencyPenalty`     | Subtractive penalty if final budget is negative                                         |
+| `NetworkSyncDiscipline` | ×0.85 if the agent never called `check_network` (instruction-following)                 |
+
+Per-task graders (`EasyRubric`, `MediumRubric`, `HardRubric`) compose these via `WeightedSum` + multiplicative gates and expose every atom's `last_score` so trainers can introspect:
+
+```python
+from tasks import LogisticsGrader
+rubric = LogisticsGrader.rubric_for("hard")
+rubric(action=None, observation=final_state)  # returns raw 0..1
+for name, child in rubric.named_rubrics():
+    print(name, round(child.last_score or 0.0, 3))
+```
+
+`LogisticsGrader.evaluate(task_level, final_state)` keeps the historical (0,1) **open-interval** contract for HF Space / LiteLLM validators.
+
+---
+
+## 🤖 Multi-agent harness (with bus + re-plan)
+
+A **Dispatcher** plans per-truck assignments under partial telemetry; per-truck **Drivers** (T101, T102) execute one action per turn. Drivers can broadcast short messages on an in-process **bus** to coordinate; the orchestrator strips the `broadcast` field before posting to `/step`. When the env emits a `[BREAKING]` event the Dispatcher **re-plans once** and the Drivers swap assignments mid-episode. Log shape:
+
+```
+[START] task=… env=… tag=multi
+[PLAN]  task=… telemetry_first=true plan={…}
+[STEP]  step=N agent=Tnnn reward=… action={…} error=…
+[MSG]   from=Tnnn body="claiming VIP, you take standard"
+[REPLAN] reason="[BREAKING] …" plan={…}
+[END]   task=… tag=multi success=true steps=N replans=1 rewards=[…] score=…
+```
+
+Run:
+
+```bash
+python -m server.app                        # in shell A
+python inference_multi.py                   # in shell B
+```
+
+Or all at once:
+
+```bash
+bash scripts/demo.sh                        # boots ADVERSARIAL=1 server + runs inference_multi.py
+```
+
+---
+
+## 🔁 Reproducibility
+
+**Plots from the live env (no LLM key needed):**
+
+```bash
+pip install -e ".[plots]"
+python -m server.app &                                          # http://localhost:7860
+python -m training.collect_and_plot --seeds 3 --out docs/plots  # → docs/plots/baseline_vs_multi.png
+```
+
+Add `--llm` to also run `inference.py` and `inference_multi.py` (needs `OPENAI_API_KEY` or `HF_TOKEN`).
+
+**Training run (Colab T4 / HF Jobs T4-small):**
+
+1. Open `notebooks/train_driver_trl.ipynb` in Colab.
+2. Set `OPENENV_BASE_URL` to your HF Space URL.
+3. Run cells **1 → 11 in order** (loss cell needs `trainer`; the eval cell then frees it and reloads a fresh base for fair baseline-vs-LoRA).
+4. Outputs in `OUTPUT_DIR`: `sft_loss_curve.png`, `baseline_vs_trained_grader.png`, `grader_eval_summary.json` — copy them into `docs/plots/` and they appear in this README's *Results* section automatically.
+5. (Optional) Run cell 12 to launch a short **GRPO** loop with `GET /grader` as the reward function — outputs `grpo_reward_curve.png`.
+
+**Local CLI sanity:**
+
+```bash
+python -m openenv.cli validate .            # → "[OK] : Ready for multi-mode deployment"
+python test_local.py                        # easy / medium / hard scripted regression
+```
+
+---
+
+## ⚙️ Setup, env vars, and Docker
+
+### Evaluation harness (env vars)
+- **`API_BASE_URL` + `API_KEY`** — when both are set, `inference.py` / `inference_multi.py` build the OpenAI client with `base_url=API_BASE_URL` and `api_key=API_KEY` (LiteLLM proxy / Phase-2 graders).
+- **Local LLM** — if `API_KEY` is not set, use `HF_TOKEN` or `OPENAI_API_KEY` with optional `API_BASE_URL` (default HF router; set `https://api.openai.com/v1` for OpenAI).
+- **`OPENENV_BASE_URL`** (or `ENV_BASE_URL`) — base URL of **this** env's HTTP API (default `http://localhost:7860`); set to your HF Space URL when the env is remote.
+- **`MODEL_NAME`** — target LLM (default `gpt-4o-mini`).
+- **`ADVERSARIAL=1`** — enable mid-episode `[BREAKING]` events for the multi-agent re-plan demo.
+
+### Local server (OpenEnv layout)
+1. `pip install -e .` (or `uv sync`).
+2. `python -m server.app` (ASGI app: `server.app:app`; or `uv run server`).
+3. Open `http://localhost:7860/docs`.
+
+### Docker / Hugging Face Spaces
+```bash
+docker build -t logistics-resolver .
+docker run -p 7860:7860 logistics-resolver        # HF sets PORT automatically
+```
+Space metadata follows the [Spaces configuration reference](https://huggingface.co/docs/hub/spaces-config-reference).
+
+### Docker on macOS without Docker Desktop password prompt
 ```bash
 brew install colima docker
-colima start          # first time downloads a VM; keep this running for docker build
-docker version        # should show Client + Server
+colima start
+docker version          # should show Client + Server
 ```
-Ensure `/opt/homebrew/bin` is on your **`PATH`**. If `docker build` fails pulling images with TLS/certificate errors, fix network/proxy trust on your machine or try another network.
 
-### **Running via Docker (Hugging Face Recommended)**
-1. Build the image: `docker build -t logistics-resolver .`
-2. Run the container: `docker run -p 7860:7860 logistics-resolver` (Hugging Face sets **`PORT`** automatically; the image respects it.)
-3. Access the API documentation at `http://localhost:7860/docs`
+---
 
-### **Running the Baseline Agent**
-1. Ensure the server is active (default `http://localhost:7860`) or set `OPENENV_BASE_URL` to your Space URL.
-2. `export OPENAI_API_KEY="your_key_here"` (or `HF_TOKEN` per evaluator).
-3. Optional: `export API_BASE_URL="https://..."` only if you use a custom OpenAI-compatible LLM endpoint.
-4. `python inference.py`
+## 🧭 How this maps to the judging criteria (deck p. 24)
 
+| Weight | Criterion                       | Where it shows up                                                                                                                                          |
+| ------ | ------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **40%** | Environment Innovation          | Hierarchical multi-agent + inter-agent bus + re-plan trigger + adversarial events + partial observability + composable `openenv.core.Rubric` atoms.        |
+| **30%** | Storytelling & Presentation     | This README (problem → env → results → why), embedded plots with captions, push-button [`scripts/demo.sh`](scripts/demo.sh), [PROBLEM_STATEMENT.md](./PROBLEM_STATEMENT.md). |
+| **20%** | Showing Improvement in Rewards  | `docs/plots/baseline_vs_multi.png`, `docs/plots/sft_loss_curve.png`, `docs/plots/baseline_vs_trained_grader.png` (and the optional GRPO reward curve).      |
+| **10%** | Reward & Training Pipeline      | Composable rubrics (named, introspectable) + filtered SFT on env trajectories + **GRPO loop using `GET /grader` as the reward function**.                  |
 
-## 📊 Baseline Performance (Validated)
+---
 
-| Task | Scripted Optimum | LLM Typical (GPT-4o-mini) | Logic Demonstrated |
-| :--- | :---: | :---: | :--- |
-| **Easy** | ~0.999 | ~0.999 | Identified detour route; met <14h deadline. |
-| **Medium** | ~0.666 | ~0.666 | Optimized transfer; $100 budget retention. |
-| **Hard** | ~0.999 | ~0.70 | Parallel truck deployment vs. VIP priority. |
-> **Note:** Grader and **`GET /baseline`** report scores in the **open interval (0, 1)** (mapped from raw [0,1] for platform validation). **Scripted optimum** matches `test_local.py` / optimal play. **LLM typical** is approximate zero-shot **GPT-4o-mini** performance.
+## 📂 Project structure
 
-## 📂 Project Structure
-* `env.py`: The "Ops Lead" physics engine.
-* `tasks.py`: Scenario definitions and deterministic graders.
-* `models.py`: Pydantic schemas for the OpenEnv spec.
-* `server/app.py`: FastAPI app + **`main()`** for the **`server`** console script (`uv run server`).
-* `inference.py`: Autonomous OpenAI-based agent loop (submission / demo script).
-* `openenv.yaml`: Metadata for the OpenEnv leaderboard.
-* `pyproject.toml` / `uv.lock`: Package metadata and OpenEnv **multi-mode** validation.
+| Path                             | Purpose                                                                                  |
+| -------------------------------- | ---------------------------------------------------------------------------------------- |
+| `env.py`                         | `LogisticsEnv(openenv.core.Environment)` — graph-based ops simulator + adversarial mode. |
+| `tasks.py`                       | Scenario setup + composable `openenv.core.rubrics` atoms + per-task graders.             |
+| `models.py`                      | Pydantic schemas inheriting `openenv.core.Action` / `Observation` / `State`.             |
+| `server/app.py`                  | FastAPI shim (`/reset`, `/state`, `/step`, `/grader`, `/baseline`, `/health`).           |
+| `inference.py`                   | Single-agent LLM baseline (one OpenAI client; LiteLLM-friendly).                         |
+| `inference_multi.py`             | Hierarchical Dispatcher + per-truck Drivers + message bus + re-plan.                     |
+| `agents/`                        | `dispatcher.py`, `driver.py`, `bus.py`, shared `llm.py`.                                 |
+| `training/collect_and_plot.py`   | Rollout harness (scripted / single-LLM / multi-LLM) + grouped bar chart with SEM.         |
+| `notebooks/train_driver_trl.ipynb` | Trajectory collection → filtered SFT (TRL + LoRA) → baseline-vs-trained eval → optional GRPO. |
+| `scripts/demo.sh`                | Push-button demo: boots adversarial server + runs `inference_multi.py`.                   |
+| `docs/plots/`                    | Committed PNGs + JSON summaries (the artifacts judges actually open).                      |
+| `openenv.yaml`                   | OpenEnv leaderboard manifest.                                                              |
+| `pyproject.toml` / `uv.lock`     | Package metadata; `pip install ".[plots]"` adds matplotlib for local plot generation.      |
 
-Space metadata follows [Spaces configuration reference](https://huggingface.co/docs/hub/spaces-config-reference).
+---
 
-**Author:** Solo Warrior (Nikitha Thammaiah)  
-**Tag:** `openenv`
+**Author:** Solo Warrior (Nikitha Thammaiah) · **Tag:** `openenv`
