@@ -6,7 +6,7 @@ colorTo: indigo
 sdk: docker
 app_port: 7860
 pinned: false
-short_description: "Hierarchical multi-agent OpenEnv logistics sim with composable rubrics + TRL training."
+short_description: "OpenEnv logistics: multi-agent sim, composable rubrics, TRL."
 tags:
   - openenv
   - fastapi
