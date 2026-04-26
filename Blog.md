@@ -133,8 +133,8 @@ The notebook never reads a static dataset — every gradient step and every bar 
 
 - 🛰️ **Live HF Space:** [nikitha04/openenv-logistics](https://huggingface.co/spaces/nikitha04/openenv-logistics)
 - 💻 **GitHub repo:** [nikitha-0704/openenv-logistics](https://github.com/nikitha-0704/openenv-logistics)
-- 📄 **Problem statement & design notes:** [`PROBLEM_STATEMENT.md`](https://github.com/nikitha-0704/openenv-logistics/blob/main/PROBLEM_STATEMENT.md)
-- 📓 **Training notebook:** [`train_driver_trl.ipynb`](https://github.com/nikitha-0704/openenv-logistics/blob/main/notebooks/train_driver_trl.ipynb)
+- 📄 **Problem statement & design notes:** [`PROBLEM_STATEMENT.md`](https://huggingface.co/spaces/nikitha04/openenv-logistics/blob/main/PROBLEM_STATEMENT.md)
+- 📓 **Training notebook:** [`train_driver_trl.ipynb`](https://huggingface.co/spaces/nikitha04/openenv-logistics/blob/main/notebooks/train_driver_trl.ipynb)
 
 ---
 

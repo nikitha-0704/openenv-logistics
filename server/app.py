@@ -145,6 +145,20 @@ _ROOT_PAGE_HTML = """<!DOCTYPE html>
     .card > *:nth-child(6) { animation-delay: 0.34s; }
     .card > *:nth-child(7) { animation-delay: 0.4s; }
     .card > *:nth-child(8) { animation-delay: 0.46s; }
+    .card > *:nth-child(9) { animation-delay: 0.52s; }
+    .footer-judge {
+      margin: 0 0 0.85rem;
+      padding: 0.65rem 0.8rem;
+      border-radius: 0.55rem;
+      background: rgba(129, 140, 248, 0.09);
+      border: 1px solid rgba(129, 140, 248, 0.22);
+      font-size: 0.78rem;
+      line-height: 1.55;
+      color: #cbd5e1;
+    }
+    .footer-judge strong { color: #f1f5f9; font-weight: 600; }
+    .footer-judge a { color: #7dd3fc; text-decoration: none; }
+    .footer-judge a:hover { text-decoration: underline; }
     .hero-viz {
       margin: 0 0 0.75rem;
       max-width: 100%;
@@ -306,6 +320,14 @@ _ROOT_PAGE_HTML = """<!DOCTYPE html>
       </div>
       <div class="section-label">Live response</div>
       <pre id="health">Loading…</pre>
+      <div class="footer-judge">
+        <strong>For judges:</strong> This Space is the <em>live API</em> only. For the problem motivation, how the env works, training (TRL + GRPO), loss/reward plots, and the mini-blog — start at the
+        <a href="https://github.com/nikitha-0704/openenv-logistics#readme" target="_blank" rel="noopener noreferrer">README on GitHub</a>
+        · <a href="https://github.com/nikitha-0704/openenv-logistics/tree/main/docs/plots" target="_blank" rel="noopener noreferrer">Plots</a>
+        · <a href="https://github.com/nikitha-0704/openenv-logistics/blob/main/notebooks/train_driver_trl.ipynb" target="_blank" rel="noopener noreferrer">Training notebook</a>
+        · <a href="https://github.com/nikitha-0704/openenv-logistics/blob/main/Blog.md" target="_blank" rel="noopener noreferrer">Blog</a>
+        · <a href="https://github.com/nikitha-0704/openenv-logistics/blob/main/PROBLEM_STATEMENT.md" target="_blank" rel="noopener noreferrer">Problem statement</a>
+      </div>
       <footer>
         JSON root for scripts: <a href="/?format=json">?format=json</a>
         · <code>POST /reset</code> · <code>POST /step</code> · <code>GET /grader</code>
@@ -373,10 +395,25 @@ _TASKS_PAGE_TEMPLATE = """<!DOCTYPE html>
       border: 1px solid rgba(148,163,184,0.2); font-size: 0.72rem; line-height: 1.4; overflow: auto;
       max-height: min(70vh, 36rem); white-space: pre; box-shadow: inset 0 -24px 48px -28px rgba(99,102,241,0.1);
       opacity: 0; animation: riseIn 0.5s ease 0.38s forwards; }
+    .footer-judge {
+      margin: 1.25rem 0 0;
+      padding: 0.65rem 0.8rem;
+      border-radius: 0.55rem;
+      background: rgba(129, 140, 248, 0.09);
+      border: 1px solid rgba(129, 140, 248, 0.22);
+      font-size: 0.78rem;
+      line-height: 1.55;
+      color: #cbd5e1;
+      opacity: 0;
+      animation: riseIn 0.48s ease 0.44s forwards;
+    }
+    .footer-judge strong { color: #f1f5f9; font-weight: 600; }
+    .footer-judge a { color: #7dd3fc; text-decoration: none; }
+    .footer-judge a:hover { text-decoration: underline; }
     @media (prefers-reduced-motion: reduce) {
       .mesh { animation: none; opacity: 0.6; }
       .mini-net path { animation: none; stroke-dasharray: none; }
-      .head-block, .task, h3.schema-head, pre.schema { animation: none !important; opacity: 1 !important; }
+      .head-block, .task, h3.schema-head, pre.schema, .footer-judge { animation: none !important; opacity: 1 !important; }
     }
   </style>
 </head>
@@ -399,6 +436,13 @@ _TASKS_PAGE_TEMPLATE = """<!DOCTYPE html>
     __TASK_CARDS__
     <h3 class="schema-head">LogisticsAction — JSON Schema</h3>
     <pre class="schema">__SCHEMA__</pre>
+    <div class="footer-judge">
+      <strong>For judges:</strong> This Space is the <em>live API</em> only. Full project narrative, training notebook, plots, and blog →
+      <a href="https://github.com/nikitha-0704/openenv-logistics#readme" target="_blank" rel="noopener noreferrer">README</a>
+      · <a href="https://github.com/nikitha-0704/openenv-logistics/tree/main/docs/plots" target="_blank" rel="noopener noreferrer">Plots</a>
+      · <a href="https://github.com/nikitha-0704/openenv-logistics/blob/main/notebooks/train_driver_trl.ipynb" target="_blank" rel="noopener noreferrer">Notebook</a>
+      · <a href="https://github.com/nikitha-0704/openenv-logistics/blob/main/Blog.md" target="_blank" rel="noopener noreferrer">Blog</a>
+    </div>
   </div>
 </body>
 </html>
