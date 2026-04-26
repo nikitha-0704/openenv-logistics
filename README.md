@@ -219,20 +219,6 @@ python test_local.py                        # easy / medium / hard scripted regr
 2. `python -m server.app` (ASGI app: `server.app:app`; or `uv run server`).
 3. Open `http://localhost:7860/docs`.
 
-### Docker / Hugging Face Spaces
-```bash
-docker build -t openhaul .
-docker run -p 7860:7860 openhaul        # HF sets PORT automatically
-```
-Space metadata follows the [Spaces configuration reference](https://huggingface.co/docs/hub/spaces-config-reference).
-
-### Docker on macOS without Docker Desktop password prompt
-```bash
-brew install colima docker
-colima start
-docker version          # should show Client + Server
-```
-
 
 ## 📂 Project structure
 
