@@ -1,5 +1,5 @@
 {
-  "env": "http://localhost:7860",
+  "env": "https://nikitha04-openenv-logistics.hf.space",
   "seeds": 3,
   "runs": {
     "scripted": {
@@ -17,6 +17,40 @@
         0.999,
         0.999,
         0.999
+      ]
+    },
+    "single_agent_llm": {
+      "easy": [
+        0.001,
+        0.001,
+        0.001
+      ],
+      "medium": [
+        0.6663,
+        0.001,
+        0.6663
+      ],
+      "hard": [
+        0.001,
+        0.001,
+        0.001
+      ]
+    },
+    "multi_agent_llm": {
+      "easy": [
+        0.001,
+        0.001,
+        0.001
+      ],
+      "medium": [
+        0.6663,
+        0.6663,
+        0.6663
+      ],
+      "hard": [
+        0.6996,
+        0.6996,
+        0.6996
       ]
     }
   }

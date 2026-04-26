@@ -59,7 +59,7 @@ I ran three policies head-to-head across all three difficulties — three seeds 
 
 ![Multi-agent vs single-agent vs scripted optimum on Easy / Medium / Hard](https://raw.githubusercontent.com/nikitha-0704/openenv-logistics/main/docs/plots/baseline_vs_multi.png)
 
-**Headline: on the Hard task — VIP delivery + adversarial port strike + budget squeeze + partial obs — the hierarchical multi-agent system reaches `0.467` while the single-agent LLM completely fails at the grader floor (`0.001`).** That's recovering nearly half of the scripted optimum on the hardest task **purely from architecture, no fine-tuning.**
+**Headline: on the Hard task — VIP delivery + adversarial port strike + budget squeeze + partial obs — the hierarchical multi-agent system reaches `0.700` while the single-agent LLM completely fails at the grader floor (`0.001`).** That's recovering **~70% of the scripted optimum on the hardest task** purely from architecture, no fine-tuning. On Medium the multi-agent system *matches* the scripted optimum exactly (`0.666`) and is more consistent seed-to-seed than the single-agent LLM (`0.444` averaged across 3 seeds, with one complete failure).
 
 The architecture: a **Dispatcher** plans per-truck assignments under partial telemetry; per-truck **Drivers** (T101, T102) execute one action per turn. Drivers can broadcast short messages on an in-process **bus** to coordinate; when the env emits a `[BREAKING]` event the Dispatcher **re-plans once** and the Drivers swap assignments mid-episode. Same LLM, same prompt-time budget, just decomposed.
 
@@ -78,9 +78,17 @@ Sample trace from a multi-agent rollout on Easy:
 
 The single-agent LLM, given the same prompt budget, runs out of working memory by step 12 and produces a malformed action that gets rejected by the env's strict schema. Hierarchy + messaging buys you exactly what you'd expect: less context per agent, cheaper re-plans.
 
-There's also a TRL + LoRA training pipeline (Qwen2.5-0.5B + LoRA r=8, ~30 minutes on a free Colab T4) that consumes the env's own trajectories. SFT loss converges; an optional GRPO cell wires `GET /grader` directly in as the reward function — exactly the *"training loop should connect to your environment, not a static dataset"* pattern the deck recommended.
+There's also a TRL + LoRA training pipeline (Qwen2.5-0.5B + LoRA r=8, ~30 minutes on a free Colab T4) that consumes the env's own trajectories. The notebook first plots the raw **trajectory score distribution** on the 200-rollout teacher dataset, with a dashed line for the filter threshold used before SFT — this is the lever that turns the env's live reward into a curated dataset:
+
+![Stacked histogram of per-trajectory grader scores per task, with SFT filter threshold](https://raw.githubusercontent.com/nikitha-0704/openenv-logistics/main/docs/plots/trajectory_score_hist.png)
+
+SFT loss on the filtered set converges cleanly:
 
 ![Cross-entropy SFT loss vs optimizer step on env trajectories](https://raw.githubusercontent.com/nikitha-0704/openenv-logistics/main/docs/plots/sft_loss_curve.png)
+
+And a short **GRPO** cell wires `GET /grader` directly in as the reward function — exactly the *"training loop should connect to your environment, not a static dataset"* pattern the deck recommended. The reward value is tiny at this scale because the 0.5B model rarely emits a parseable action that actually completes a delivery — but the point of the plot is that the wiring works end-to-end, gradient signal flows from a live HTTP endpoint into a TRL `GRPOTrainer`, and you can scale the exact same loop up:
+
+![GRPO reward curve using GET /grader as the reward function](https://raw.githubusercontent.com/nikitha-0704/openenv-logistics/main/docs/plots/grpo_reward_curve.png)
 
 ## 4. Why it matters
 
@@ -111,17 +119,13 @@ curl -s "$SPACE/grader" | jq .
 
 That's a one-step interaction with a Hard-difficulty episode of the env, including the partial-telemetry reset and the live grader score. No install, no API key, no notebook — just `curl`.
 
-## Reproduce the chart in 30 minutes
+## Reproduce every plot in this post in ~30 minutes
 
 1. Open `notebooks/train_driver_trl.ipynb` in **Google Colab** (free T4 is enough).
-2. Set two env vars in the first cell: `OPENENV_BASE_URL=https://nikitha04-openenv-logistics.hf.space` and `HF_TOKEN=<your read token>`.
-3. Hit **Runtime → Run all**. You'll get:
-   - A 200-trajectory teacher dataset, collected live from the env's `/step` endpoint.
-   - An SFT loss curve (Qwen2.5-0.5B + LoRA r=8, ~10 min).
-   - The 3-seed grader bar chart at the top of this post (~20 min, scripted + single-agent + multi-agent across Easy/Medium/Hard).
-   - An optional GRPO cell that wires the env's `GET /grader` directly in as the reward function.
+2. Set `OPENENV_BASE_URL=https://nikitha04-openenv-logistics.hf.space` in the first cell and store your `HF_TOKEN` in **Colab Secrets** (never paste it into a cell).
+3. Hit **Runtime → Run all**. Every figure above — the trajectory histogram, the SFT loss curve, the GRPO reward curve, and the 3-seed scripted-vs-single-vs-multi bar chart — renders inline in Colab *and* is saved to disk so you can commit it back to `docs/plots/` unchanged.
 
-The notebook never reads a static dataset — every gradient step traces back to a live env transition. That's the *"training loop talks to your environment"* pattern the OpenEnv deck specifically asked for.
+The notebook never reads a static dataset — every gradient step and every bar on the chart traces back to a live env transition. That's the *"training loop talks to your environment"* pattern the OpenEnv deck specifically asked for.
 
 ## Links
 
