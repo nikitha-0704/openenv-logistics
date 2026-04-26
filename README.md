@@ -38,6 +38,7 @@ tags:
 | 📝 [**Blog post**](https://huggingface.co/spaces/nikitha04/openenv-logistics/blob/main/Blog.md) | Narrative writeup in the hackathon template — problem → env → results → why it matters. | Storytelling & presentation (30% of score). |
 | 📓 [**Training notebook**](https://huggingface.co/spaces/nikitha04/openenv-logistics/blob/main/notebooks/train_driver_trl.ipynb) | End-to-end Colab runbook: live trajectory collection → SFT → GRPO with `/grader` as reward → multi-agent eval. Every plot renders inline. | Improvement evidence + training pipeline (30% of score). |
 | 🛰️ [**Live HF Space**](https://huggingface.co/spaces/nikitha04/openenv-logistics) | The env running as a Dockerized FastAPI service at `…hf.space` — `/reset`, `/step`, `/grader`, `/docs`. | One-click proof the env is reachable and OpenEnv-compliant. |
+| 💻 [**GitHub (source)**](https://github.com/nikitha-0704/openenv-logistics) | Full tree: `env.py`, `tasks.py`, `training/`, `docs/plots/`, CI-friendly clone URL. | Same commit history as the Space when you push both remotes. |
 
 ---
 
@@ -189,7 +190,7 @@ Add `--llm` to also run `inference.py` and `inference_multi.py` (needs `OPENAI_A
 ```bash
 pip install -e ".[train]"               
 export OPENENV_BASE_URL=https://<your-space>.hf.space
-export HF_TOKEN=hf_...                 
+export HF_TOKEN=<your Hugging Face read token>                 
 python -m training.train_driver_sft    
 
 ```
@@ -235,7 +236,6 @@ python test_local.py
 | `scripts/demo.sh`                | Push-button demo: boots adversarial server + runs `inference_multi.py`.                   |
 | `docs/plots/`                    | Committed PNGs + JSON summaries (the artifacts judges actually open).                      |
 | `Blog.md`                        | Mini-blog writeup (separate from README; also used for HF Space validation).             |
-| `docs/blog_post.md`              | Short pointer to `Blog.md` (keeps a stable path for older links).                          |
 | `openenv.yaml`                   | OpenEnv leaderboard manifest.                                                              |
 | `pyproject.toml` / `uv.lock`     | Installable package **`openhaul`**; `pip install ".[plots]"` adds matplotlib for local plot generation.      |
 
