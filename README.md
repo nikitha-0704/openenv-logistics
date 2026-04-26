@@ -28,7 +28,7 @@ tags:
 - 🟪 **Multi-agent interactions** — Dispatcher / Driver / message bus / re-plan = enterprise application pattern
 - 🟩 **World modeling** — partial telemetry forces explicit `check_network` belief-state updates
 
-📄 **[Problem statement & design](./PROBLEM_STATEMENT.md)** · 📝 **[Blog post (the story)](./docs/blog_post.md)** · 📓 **[Training notebook](./notebooks/train_driver_trl.ipynb)** · 🛰️ **[Live HF Space](https://huggingface.co/spaces/nikitha04/openenv-logistics)** · 🎬 **[Push-button demo](./scripts/demo.sh)**
+📄 **[Problem statement & design](./PROBLEM_STATEMENT.md)** · 📝 **[Blog writeup (on Hugging Face)](https://huggingface.co/spaces/nikitha04/openenv-logistics/blob/main/Blog.md)** ([same file in repo](./Blog.md)) · 📓 **[Training notebook](./notebooks/train_driver_trl.ipynb)** · 🛰️ **[Live HF Space](https://huggingface.co/spaces/nikitha04/openenv-logistics)** · 🎬 **[Push-button demo](./scripts/demo.sh)**
 
 ---
 
@@ -270,6 +270,8 @@ docker version          # should show Client + Server
 | `notebooks/train_driver_trl.ipynb` | Trajectory collection → filtered SFT (TRL + LoRA) → baseline-vs-trained eval → optional GRPO. |
 | `scripts/demo.sh`                | Push-button demo: boots adversarial server + runs `inference_multi.py`.                   |
 | `docs/plots/`                    | Committed PNGs + JSON summaries (the artifacts judges actually open).                      |
+| `Blog.md`                        | Mini-blog writeup (separate from README; also used for HF Space validation).             |
+| `docs/blog_post.md`              | Short pointer to `Blog.md` (keeps a stable path for older links).                          |
 | `openenv.yaml`                   | OpenEnv leaderboard manifest.                                                              |
 | `pyproject.toml` / `uv.lock`     | Package metadata; `pip install ".[plots]"` adds matplotlib for local plot generation.      |
 
