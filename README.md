@@ -155,7 +155,7 @@ python inference_multi.py                   # in shell B
 Or all at once:
 
 ```bash
-bash scripts/demo.sh                        # boots ADVERSARIAL=1 server + runs inference_multi.py
+bash scripts/demo.sh                        
 ```
 
 ---
@@ -187,20 +187,18 @@ Add `--llm` to also run `inference.py` and `inference_multi.py` (needs `OPENAI_A
 **Local training (same pipeline as the notebook, no Colab):**
 
 ```bash
-pip install -e ".[train]"               # trl, peft, torch, transformers, …
-# If the download times out: pip install --default-timeout=1000 -e ".[train]"
-# If pip reports ResolutionImpossible (datasets / fsspec / aiohttp): pull latest pyproject.toml — `[train]` pins a compatible `fsspec[http]` range.
+pip install -e ".[train]"               
 export OPENENV_BASE_URL=https://<your-space>.hf.space
-export HF_TOKEN=hf_...                 # to download the student model (Qwen2.5-0.5B)
-python -m training.train_driver_sft    # → docs/plots/sft_loss_curve.png, baseline_vs_trained_grader.png, grader_eval_summary.json
-# LoRA weights: training/outputs/sft/driver_lora/  (gitignored; add --skip-eval for a faster smoke test)
+export HF_TOKEN=hf_...                 
+python -m training.train_driver_sft    
+
 ```
 
 **Local CLI sanity:**
 
 ```bash
-python -m openenv.cli validate .            # → "[OK] : Ready for multi-mode deployment"
-python test_local.py                        # easy / medium / hard scripted regression
+python -m openenv.cli validate .            
+python test_local.py                        
 ```
 
 ---
@@ -227,7 +225,7 @@ python test_local.py                        # easy / medium / hard scripted regr
 | `env.py`                         | `LogisticsEnv(openenv.core.Environment)` — graph-based ops simulator + adversarial mode. |
 | `tasks.py`                       | Scenario setup + composable `openenv.core.rubrics` atoms + per-task graders.             |
 | `models.py`                      | Pydantic schemas inheriting `openenv.core.Action` / `Observation` / `State`.             |
-| `server/app.py`                  | FastAPI shim (`/reset`, `/state`, `/step`, `/grader`, `/baseline`, `/health`).           |
+| `server/app.py`                  | FastAPI shim (`/reset`, `/state`, `/step`, `/grader`, `/baseline`, `/health`, `/version`, `/docs`, `/redoc`; `/tasks?format=html` for a readable task + schema page). |
 | `inference.py`                   | Single-agent LLM baseline (one OpenAI client; LiteLLM-friendly).                         |
 | `inference_multi.py`             | Hierarchical Dispatcher + per-truck Drivers + message bus + re-plan.                     |
 | `agents/`                        | `dispatcher.py`, `driver.py`, `bus.py`, shared `llm.py`.                                 |
