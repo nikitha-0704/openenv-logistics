@@ -6,7 +6,7 @@ colorTo: indigo
 sdk: docker
 app_port: 7860
 pinned: false
-short_description: "OpenHaul — break-glass OpenEnv logistics: multi-agent, rubrics, TRL."
+short_description: "OpenHaul: OpenEnv logistics — multi-agent, rubrics, TRL."
 tags:
   - openenv
   - fastapi
