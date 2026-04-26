@@ -146,19 +146,50 @@ _ROOT_PAGE_HTML = """<!DOCTYPE html>
     .card > *:nth-child(7) { animation-delay: 0.4s; }
     .card > *:nth-child(8) { animation-delay: 0.46s; }
     .card > *:nth-child(9) { animation-delay: 0.52s; }
-    .footer-judge {
-      margin: 0 0 0.85rem;
-      padding: 0.65rem 0.8rem;
-      border-radius: 0.55rem;
-      background: rgba(129, 140, 248, 0.09);
-      border: 1px solid rgba(129, 140, 248, 0.22);
-      font-size: 0.78rem;
+    .doc-hub {
+      margin: 0 0 0.9rem;
+      padding: 1rem 1rem 0.95rem;
+      border-radius: 0.75rem;
+      background: rgba(15, 23, 42, 0.5);
+      border: 1px solid rgba(148, 163, 184, 0.14);
+      box-shadow: 0 0 0 1px rgba(255,255,255,0.03) inset;
+    }
+    .doc-hub-kicker {
+      display: block;
+      font-size: 0.62rem;
+      font-weight: 700;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: #94a3b8;
+      margin-bottom: 0.4rem;
+    }
+    .doc-hub-lede {
+      margin: 0 0 0.8rem;
+      font-size: 0.8rem;
       line-height: 1.55;
       color: #cbd5e1;
     }
-    .footer-judge strong { color: #f1f5f9; font-weight: 600; }
-    .footer-judge a { color: #7dd3fc; text-decoration: none; }
-    .footer-judge a:hover { text-decoration: underline; }
+    .doc-hub-chips { display: flex; flex-wrap: wrap; gap: 0.45rem; }
+    .doc-hub .chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.32rem;
+      padding: 0.4rem 0.78rem;
+      border-radius: 999px;
+      font-size: 0.76rem;
+      font-weight: 500;
+      text-decoration: none;
+      color: #f8fafc;
+      background: rgba(255, 255, 255, 0.055);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      transition: background 0.16s ease, border-color 0.16s ease, transform 0.16s ease;
+    }
+    .doc-hub .chip:hover {
+      background: rgba(99, 102, 241, 0.22);
+      border-color: rgba(165, 180, 252, 0.35);
+      transform: translateY(-1px);
+    }
+    .doc-hub .chip .ico { font-style: normal; opacity: 0.88; font-size: 0.85em; }
     .hero-viz {
       margin: 0 0 0.75rem;
       max-width: 100%;
@@ -320,14 +351,17 @@ _ROOT_PAGE_HTML = """<!DOCTYPE html>
       </div>
       <div class="section-label">Live response</div>
       <pre id="health">Loading…</pre>
-      <div class="footer-judge">
-        <strong>For judges:</strong> This Space is the <em>live API</em> only. For the problem motivation, how the env works, training (TRL + GRPO), loss/reward plots, and the mini-blog — start at the
-        <a href="https://github.com/nikitha-0704/openenv-logistics#readme" target="_blank" rel="noopener noreferrer">README on GitHub</a>
-        · <a href="https://github.com/nikitha-0704/openenv-logistics/tree/main/docs/plots" target="_blank" rel="noopener noreferrer">Plots</a>
-        · <a href="https://github.com/nikitha-0704/openenv-logistics/blob/main/notebooks/train_driver_trl.ipynb" target="_blank" rel="noopener noreferrer">Training notebook</a>
-        · <a href="https://github.com/nikitha-0704/openenv-logistics/blob/main/Blog.md" target="_blank" rel="noopener noreferrer">Blog</a>
-        · <a href="https://github.com/nikitha-0704/openenv-logistics/blob/main/PROBLEM_STATEMENT.md" target="_blank" rel="noopener noreferrer">Problem statement</a>
-      </div>
+      <section class="doc-hub" aria-label="Documentation and repository">
+        <span class="doc-hub-kicker">Repository</span>
+        <p class="doc-hub-lede">This Space is the runnable API. The GitHub repo holds the full write-up, TRL training + GRPO, loss and reward plots, and environment design notes.</p>
+        <div class="doc-hub-chips">
+          <a class="chip" href="https://github.com/nikitha-0704/openenv-logistics#readme" target="_blank" rel="noopener noreferrer"><span class="ico" aria-hidden="true">◆</span> README</a>
+          <a class="chip" href="https://github.com/nikitha-0704/openenv-logistics/tree/main/docs/plots" target="_blank" rel="noopener noreferrer"><span class="ico" aria-hidden="true">▣</span> Plots</a>
+          <a class="chip" href="https://github.com/nikitha-0704/openenv-logistics/blob/main/notebooks/train_driver_trl.ipynb" target="_blank" rel="noopener noreferrer"><span class="ico" aria-hidden="true">◇</span> Notebook</a>
+          <a class="chip" href="https://github.com/nikitha-0704/openenv-logistics/blob/main/Blog.md" target="_blank" rel="noopener noreferrer"><span class="ico" aria-hidden="true">▤</span> Blog</a>
+          <a class="chip" href="https://github.com/nikitha-0704/openenv-logistics/blob/main/PROBLEM_STATEMENT.md" target="_blank" rel="noopener noreferrer"><span class="ico" aria-hidden="true">◎</span> Design</a>
+        </div>
+      </section>
       <footer>
         JSON root for scripts: <a href="/?format=json">?format=json</a>
         · <code>POST /reset</code> · <code>POST /step</code> · <code>GET /grader</code>
@@ -395,25 +429,56 @@ _TASKS_PAGE_TEMPLATE = """<!DOCTYPE html>
       border: 1px solid rgba(148,163,184,0.2); font-size: 0.72rem; line-height: 1.4; overflow: auto;
       max-height: min(70vh, 36rem); white-space: pre; box-shadow: inset 0 -24px 48px -28px rgba(99,102,241,0.1);
       opacity: 0; animation: riseIn 0.5s ease 0.38s forwards; }
-    .footer-judge {
+    .doc-hub {
       margin: 1.25rem 0 0;
-      padding: 0.65rem 0.8rem;
-      border-radius: 0.55rem;
-      background: rgba(129, 140, 248, 0.09);
-      border: 1px solid rgba(129, 140, 248, 0.22);
-      font-size: 0.78rem;
-      line-height: 1.55;
-      color: #cbd5e1;
+      padding: 1rem 1rem 0.95rem;
+      border-radius: 0.75rem;
+      background: rgba(15, 23, 42, 0.5);
+      border: 1px solid rgba(148, 163, 184, 0.14);
+      box-shadow: 0 0 0 1px rgba(255,255,255,0.03) inset;
       opacity: 0;
       animation: riseIn 0.48s ease 0.44s forwards;
     }
-    .footer-judge strong { color: #f1f5f9; font-weight: 600; }
-    .footer-judge a { color: #7dd3fc; text-decoration: none; }
-    .footer-judge a:hover { text-decoration: underline; }
+    .doc-hub-kicker {
+      display: block;
+      font-size: 0.62rem;
+      font-weight: 700;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: #94a3b8;
+      margin-bottom: 0.4rem;
+    }
+    .doc-hub-lede {
+      margin: 0 0 0.8rem;
+      font-size: 0.8rem;
+      line-height: 1.55;
+      color: #cbd5e1;
+    }
+    .doc-hub-chips { display: flex; flex-wrap: wrap; gap: 0.45rem; }
+    .doc-hub .chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.32rem;
+      padding: 0.4rem 0.78rem;
+      border-radius: 999px;
+      font-size: 0.76rem;
+      font-weight: 500;
+      text-decoration: none;
+      color: #f8fafc;
+      background: rgba(255, 255, 255, 0.055);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      transition: background 0.16s ease, border-color 0.16s ease, transform 0.16s ease;
+    }
+    .doc-hub .chip:hover {
+      background: rgba(99, 102, 241, 0.22);
+      border-color: rgba(165, 180, 252, 0.35);
+      transform: translateY(-1px);
+    }
+    .doc-hub .chip .ico { font-style: normal; opacity: 0.88; font-size: 0.85em; }
     @media (prefers-reduced-motion: reduce) {
       .mesh { animation: none; opacity: 0.6; }
       .mini-net path { animation: none; stroke-dasharray: none; }
-      .head-block, .task, h3.schema-head, pre.schema, .footer-judge { animation: none !important; opacity: 1 !important; }
+      .head-block, .task, h3.schema-head, pre.schema, .doc-hub { animation: none !important; opacity: 1 !important; }
     }
   </style>
 </head>
@@ -436,13 +501,17 @@ _TASKS_PAGE_TEMPLATE = """<!DOCTYPE html>
     __TASK_CARDS__
     <h3 class="schema-head">LogisticsAction — JSON Schema</h3>
     <pre class="schema">__SCHEMA__</pre>
-    <div class="footer-judge">
-      <strong>For judges:</strong> This Space is the <em>live API</em> only. Full project narrative, training notebook, plots, and blog →
-      <a href="https://github.com/nikitha-0704/openenv-logistics#readme" target="_blank" rel="noopener noreferrer">README</a>
-      · <a href="https://github.com/nikitha-0704/openenv-logistics/tree/main/docs/plots" target="_blank" rel="noopener noreferrer">Plots</a>
-      · <a href="https://github.com/nikitha-0704/openenv-logistics/blob/main/notebooks/train_driver_trl.ipynb" target="_blank" rel="noopener noreferrer">Notebook</a>
-      · <a href="https://github.com/nikitha-0704/openenv-logistics/blob/main/Blog.md" target="_blank" rel="noopener noreferrer">Blog</a>
-    </div>
+    <section class="doc-hub" aria-label="Documentation and repository">
+      <span class="doc-hub-kicker">Repository</span>
+      <p class="doc-hub-lede">The Space is the API; the repo has README, notebook, plots, blog, and design notes.</p>
+      <div class="doc-hub-chips">
+        <a class="chip" href="https://github.com/nikitha-0704/openenv-logistics#readme" target="_blank" rel="noopener noreferrer"><span class="ico" aria-hidden="true">◆</span> README</a>
+        <a class="chip" href="https://github.com/nikitha-0704/openenv-logistics/tree/main/docs/plots" target="_blank" rel="noopener noreferrer"><span class="ico" aria-hidden="true">▣</span> Plots</a>
+        <a class="chip" href="https://github.com/nikitha-0704/openenv-logistics/blob/main/notebooks/train_driver_trl.ipynb" target="_blank" rel="noopener noreferrer"><span class="ico" aria-hidden="true">◇</span> Notebook</a>
+        <a class="chip" href="https://github.com/nikitha-0704/openenv-logistics/blob/main/Blog.md" target="_blank" rel="noopener noreferrer"><span class="ico" aria-hidden="true">▤</span> Blog</a>
+        <a class="chip" href="https://github.com/nikitha-0704/openenv-logistics/blob/main/PROBLEM_STATEMENT.md" target="_blank" rel="noopener noreferrer"><span class="ico" aria-hidden="true">◎</span> Design</a>
+      </div>
+    </section>
   </div>
 </body>
 </html>
