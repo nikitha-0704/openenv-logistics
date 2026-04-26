@@ -233,18 +233,6 @@ colima start
 docker version          # should show Client + Server
 ```
 
----
-
-## 🧭 How this maps to the judging criteria (deck p. 24)
-
-| Weight | Criterion                       | Where it shows up                                                                                                                                          |
-| ------ | ------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **40%** | Environment Innovation          | Hierarchical multi-agent + inter-agent bus + re-plan trigger + adversarial events + partial observability + composable `openenv.core.Rubric` atoms.        |
-| **30%** | Storytelling & Presentation     | This README (problem → env → results → why), embedded plots with captions, push-button [`scripts/demo.sh`](scripts/demo.sh), [PROBLEM_STATEMENT.md](./PROBLEM_STATEMENT.md). |
-| **20%** | Showing Improvement in Rewards  | `docs/plots/baseline_vs_multi.png` (3-seed scripted / single-agent / multi-agent), `docs/plots/trajectory_score_hist.png` (teacher dataset with SFT filter), `docs/plots/sft_loss_curve.png`, `docs/plots/grpo_reward_curve.png` (live `/grader` as reward). Every figure has a matching JSON summary committed next to it. |
-| **10%** | Reward & Training Pipeline      | Composable rubrics (named, introspectable) + filtered SFT on env-native trajectories + **GRPO loop using `GET /grader` directly as the reward function**, all runnable end-to-end from `notebooks/train_driver_trl.ipynb`.                  |
-
----
 
 ## 📂 Project structure
 
@@ -269,4 +257,4 @@ docker version          # should show Client + Server
 
 ---
 
-**Author:** Solo Warrior (Nikitha Thammaiah) · **Tag:** `openenv`
+**Author:** Nikitha Thammaiah · **Tag:** `openenv`
