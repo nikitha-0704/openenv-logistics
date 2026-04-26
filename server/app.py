@@ -15,6 +15,7 @@ if str(_ROOT) not in sys.path:
 import json
 
 from fastapi import FastAPI, HTTPException, Request
+from fastapi.responses import HTMLResponse
 from pydantic import BaseModel
 
 from env import LogisticsEnv
@@ -27,10 +28,48 @@ env = LogisticsEnv()
 current_task_level = "easy"
 
 
+_ROOT_PAGE_HTML = """<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Global Logistics Resolver API</title>
+  <style>
+    body { font-family: system-ui, sans-serif; max-width: 40rem; margin: 2rem auto; padding: 0 1rem; line-height: 1.5; }
+    a { color: #2563eb; }
+    pre { background: #f4f4f5; padding: 0.75rem 1rem; border-radius: 6px; overflow-x: auto; font-size: 0.9rem; }
+    .muted { color: #71717a; font-size: 0.875rem; }
+  </style>
+</head>
+<body>
+  <h1>Global Logistics Resolver API</h1>
+  <p>OpenEnv-compatible HTTP API. Interactive routes:</p>
+  <ul>
+    <li><a href="/docs"><strong>OpenAPI docs</strong> (/docs)</a></li>
+    <li><a href="/health">Health JSON</a> (/health)</li>
+    <li><a href="/tasks">Task list + action schema</a> (/tasks)</li>
+  </ul>
+  <p class="muted">Live health (same payload as <code>/health</code>):</p>
+  <pre id="health">Loading…</pre>
+  <p class="muted">Machine-readable root: <a href="/?format=json"><code>?format=json</code></a></p>
+  <script>
+    fetch("/health").then(function (r) { return r.json(); }).then(function (j) {
+      document.getElementById("health").textContent = JSON.stringify(j);
+    }).catch(function () {
+      document.getElementById("health").textContent = "(Could not load /health — open the link above.)";
+    });
+  </script>
+</body>
+</html>
+"""
+
+
 @app.get("/")
-def root():
-    """Space / iframe probes often hit `/`; API lives under `/reset`, `/state`, `/step`, `/docs`."""
-    return {"status": "ok", "service": "global-logistics-resolver", "docs": "/docs"}
+async def root(request: Request):
+    """Space iframe hits `/` — serve a tiny HTML shell; API under `/reset`, `/state`, `/step`, `/docs`."""
+    if request.query_params.get("format") == "json":
+        return {"status": "ok", "service": "global-logistics-resolver", "docs": "/docs"}
+    return HTMLResponse(content=_ROOT_PAGE_HTML)
 
 
 @app.post("/reset")
