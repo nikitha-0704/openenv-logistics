@@ -34,9 +34,9 @@ tags:
 
 | Link | What's there | Why open it |
 | ---- | ------------ | ----------- |
-| 📄 [**Problem statement & design**](./PROBLEM_STATEMENT.md) | The "what + why" of the env in one page — capability gap, scenarios, rubric atoms, ablations. | Fastest way to evaluate environment innovation (40% of score). |
-| 📝 [**Blog post**](./Blog.md) | Narrative writeup in the hackathon template — problem → env → results → why it matters. | Storytelling & presentation (30% of score). |
-| 📓 [**Training notebook**](./notebooks/train_driver_trl.ipynb) | End-to-end Colab runbook: live trajectory collection → SFT → GRPO with `/grader` as reward → multi-agent eval. Every plot renders inline. | Improvement evidence + training pipeline (30% of score). |
+| 📄 [**Problem statement & design**](https://huggingface.co/spaces/nikitha04/openenv-logistics/blob/main/PROBLEM_STATEMENT.md) | The "what + why" of the env in one page — capability gap, scenarios, rubric atoms, ablations. | Fastest way to evaluate environment innovation (40% of score). |
+| 📝 [**Blog post**](https://huggingface.co/spaces/nikitha04/openenv-logistics/blob/main/Blog.md) | Narrative writeup in the hackathon template — problem → env → results → why it matters. | Storytelling & presentation (30% of score). |
+| 📓 [**Training notebook**](https://huggingface.co/spaces/nikitha04/openenv-logistics/blob/main/notebooks/train_driver_trl.ipynb) | End-to-end Colab runbook: live trajectory collection → SFT → GRPO with `/grader` as reward → multi-agent eval. Every plot renders inline. | Improvement evidence + training pipeline (30% of score). |
 | 🛰️ [**Live HF Space**](https://huggingface.co/spaces/nikitha04/openenv-logistics) | The env running as a Dockerized FastAPI service at `…hf.space` — `/reset`, `/step`, `/grader`, `/docs`. | One-click proof the env is reachable and OpenEnv-compliant. |
 
 ---
