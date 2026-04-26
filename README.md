@@ -28,7 +28,7 @@ tags:
 - 🟪 **Multi-agent interactions** — Dispatcher / Driver / message bus / re-plan = enterprise application pattern
 - 🟩 **World modeling** — partial telemetry forces explicit `check_network` belief-state updates
 
-📄 **[Problem statement & design](./PROBLEM_STATEMENT.md)** · 📝 **[Blog writeup (on Hugging Face)](https://huggingface.co/spaces/nikitha04/openenv-logistics/blob/main/Blog.md)** ([same file in repo](./Blog.md)) · 📓 **[Training notebook](./notebooks/train_driver_trl.ipynb)** · 🛰️ **[Live HF Space](https://huggingface.co/spaces/nikitha04/openenv-logistics)** · 🎬 **[Push-button demo](./scripts/demo.sh)**
+📄 **[Problem statement & design](./PROBLEM_STATEMENT.md)** · 📝 **[Blog](https://huggingface.co/spaces/nikitha04/openenv-logistics/blob/main/Blog.md)** · 📓 **[Training notebook](./notebooks/train_driver_trl.ipynb)** · 🛰️ **[Live HF Space](https://huggingface.co/spaces/nikitha04/openenv-logistics)** · 🎬 **[Push-button demo](./scripts/demo.sh)**
 
 ---
 
