@@ -353,13 +353,12 @@ _ROOT_PAGE_HTML = """<!DOCTYPE html>
       <pre id="health">Loading…</pre>
       <section class="doc-hub" aria-label="Documentation and repository">
         <span class="doc-hub-kicker">Repository</span>
-        <p class="doc-hub-lede">This Space is the runnable API. The GitHub repo holds the full write-up, TRL training + GRPO, loss and reward plots, and environment design notes.</p>
+        <p class="doc-hub-lede">This page is the live API. README, training notebook (TRL + GRPO), blog, and environment design live in this Space’s Hugging Face repository — open the links below.</p>
         <div class="doc-hub-chips">
-          <a class="chip" href="https://github.com/nikitha-0704/openenv-logistics#readme" target="_blank" rel="noopener noreferrer"><span class="ico" aria-hidden="true">◆</span> README</a>
-          <a class="chip" href="https://github.com/nikitha-0704/openenv-logistics/tree/main/docs/plots" target="_blank" rel="noopener noreferrer"><span class="ico" aria-hidden="true">▣</span> Plots</a>
-          <a class="chip" href="https://github.com/nikitha-0704/openenv-logistics/blob/main/notebooks/train_driver_trl.ipynb" target="_blank" rel="noopener noreferrer"><span class="ico" aria-hidden="true">◇</span> Notebook</a>
-          <a class="chip" href="https://github.com/nikitha-0704/openenv-logistics/blob/main/Blog.md" target="_blank" rel="noopener noreferrer"><span class="ico" aria-hidden="true">▤</span> Blog</a>
-          <a class="chip" href="https://github.com/nikitha-0704/openenv-logistics/blob/main/PROBLEM_STATEMENT.md" target="_blank" rel="noopener noreferrer"><span class="ico" aria-hidden="true">◎</span> Design</a>
+          <a class="chip" href="https://huggingface.co/spaces/nikitha04/openenv-logistics/blob/main/README.md" target="_blank" rel="noopener noreferrer"><span class="ico" aria-hidden="true">◆</span> README</a>
+          <a class="chip" href="https://huggingface.co/spaces/nikitha04/openenv-logistics/blob/main/notebooks/train_driver_trl.ipynb" target="_blank" rel="noopener noreferrer"><span class="ico" aria-hidden="true">◇</span> Notebook</a>
+          <a class="chip" href="https://huggingface.co/spaces/nikitha04/openenv-logistics/blob/main/Blog.md" target="_blank" rel="noopener noreferrer"><span class="ico" aria-hidden="true">▤</span> Blog</a>
+          <a class="chip" href="https://huggingface.co/spaces/nikitha04/openenv-logistics/blob/main/PROBLEM_STATEMENT.md" target="_blank" rel="noopener noreferrer"><span class="ico" aria-hidden="true">◎</span> Design</a>
         </div>
       </section>
       <footer>
@@ -503,13 +502,12 @@ _TASKS_PAGE_TEMPLATE = """<!DOCTYPE html>
     <pre class="schema">__SCHEMA__</pre>
     <section class="doc-hub" aria-label="Documentation and repository">
       <span class="doc-hub-kicker">Repository</span>
-      <p class="doc-hub-lede">The Space is the API; the repo has README, notebook, plots, blog, and design notes.</p>
+      <p class="doc-hub-lede">Same idea: API here; README, notebook, blog, and design notes in this Space on Hugging Face.</p>
       <div class="doc-hub-chips">
-        <a class="chip" href="https://github.com/nikitha-0704/openenv-logistics#readme" target="_blank" rel="noopener noreferrer"><span class="ico" aria-hidden="true">◆</span> README</a>
-        <a class="chip" href="https://github.com/nikitha-0704/openenv-logistics/tree/main/docs/plots" target="_blank" rel="noopener noreferrer"><span class="ico" aria-hidden="true">▣</span> Plots</a>
-        <a class="chip" href="https://github.com/nikitha-0704/openenv-logistics/blob/main/notebooks/train_driver_trl.ipynb" target="_blank" rel="noopener noreferrer"><span class="ico" aria-hidden="true">◇</span> Notebook</a>
-        <a class="chip" href="https://github.com/nikitha-0704/openenv-logistics/blob/main/Blog.md" target="_blank" rel="noopener noreferrer"><span class="ico" aria-hidden="true">▤</span> Blog</a>
-        <a class="chip" href="https://github.com/nikitha-0704/openenv-logistics/blob/main/PROBLEM_STATEMENT.md" target="_blank" rel="noopener noreferrer"><span class="ico" aria-hidden="true">◎</span> Design</a>
+        <a class="chip" href="https://huggingface.co/spaces/nikitha04/openenv-logistics/blob/main/README.md" target="_blank" rel="noopener noreferrer"><span class="ico" aria-hidden="true">◆</span> README</a>
+        <a class="chip" href="https://huggingface.co/spaces/nikitha04/openenv-logistics/blob/main/notebooks/train_driver_trl.ipynb" target="_blank" rel="noopener noreferrer"><span class="ico" aria-hidden="true">◇</span> Notebook</a>
+        <a class="chip" href="https://huggingface.co/spaces/nikitha04/openenv-logistics/blob/main/Blog.md" target="_blank" rel="noopener noreferrer"><span class="ico" aria-hidden="true">▤</span> Blog</a>
+        <a class="chip" href="https://huggingface.co/spaces/nikitha04/openenv-logistics/blob/main/PROBLEM_STATEMENT.md" target="_blank" rel="noopener noreferrer"><span class="ico" aria-hidden="true">◎</span> Design</a>
       </div>
     </section>
   </div>
