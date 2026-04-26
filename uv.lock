@@ -689,7 +689,7 @@ wheels = [
 ]
 
 [[package]]
-name = "global-logistics-resolver"
+name = "openhaul"
 version = "1.0.0"
 source = { editable = "." }
 dependencies = [

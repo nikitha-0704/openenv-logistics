@@ -162,7 +162,7 @@ def _plot(summary: dict, out_path: Path) -> None:
     ax.set_ylabel("Terminal grader score (0–1, open-interval)")
     seed_label = f"seeds = {summary.get('seeds', '?')} per (run × task); error bars = SEM"
     ax.set_title(
-        f"Global Logistics Resolver — agent comparison\n{seed_label}",
+        f"OpenHaul — agent comparison\n{seed_label}",
         fontsize=11,
     )
     ax.grid(axis="y", linestyle=":", alpha=0.4)

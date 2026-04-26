@@ -1,11 +1,13 @@
 ---
-title: "Global Logistics Resolver — when one truck breaks down, the other has to know"
+title: "OpenHaul — when one truck breaks down, the other has to know"
 thumbnail: docs/plots/baseline_vs_multi.png
 authors:
 - user: nikitha04
 ---
 
-# Global Logistics Resolver — when one truck breaks down, the other has to know
+# OpenHaul — when one truck breaks down, the other has to know
+
+> *Break-glass logistics under disruption — OpenEnv multi-truck ops with partial observability.*
 
 It's 3:47 AM. You're the on-call ops lead at a logistics company. Your phone buzzes:
 
@@ -25,7 +27,7 @@ Most agent benchmarks are one of three things:
 
 The OpenEnv hackathon deck called out three open problems explicitly: **long-horizon planning, multi-agent interactions, and world-modeling under partial observability.** None of the existing benchmarks I tried hit all three.
 
-So I built one that does. **Global Logistics Resolver** is a fully OpenEnv-compliant simulator of a regional logistics crisis: 4 nodes, 8 routes, 2 trucks, a budget, a SLA clock, and an adversarial event that fires mid-episode. The agent operates on **partial telemetry** — it cannot see route status until it spends an action calling `check_network`. It must coordinate two trucks across a 30-step horizon while a port strike or a flooded highway throws off its plan halfway through.
+So I built one that does. **OpenHaul** is a fully OpenEnv-compliant simulator of a regional logistics crisis: 4 nodes, 8 routes, 2 trucks, a budget, a SLA clock, and an adversarial event that fires mid-episode. The agent operates on **partial telemetry** — it cannot see route status until it spends an action calling `check_network`. It must coordinate two trucks across a 30-step horizon while a port strike or a flooded highway throws off its plan halfway through.
 
 ## 2. The environment
 
@@ -136,4 +138,4 @@ The notebook never reads a static dataset — every gradient step and every bar 
 
 ---
 
-Built solo for the **OpenEnv Hackathon (April 2026)**. The env is MIT-licensed and intentionally small — drop in a new task, swap in a different rubric atom, or wire it into your favorite RL stack. Pull requests welcome, especially new scenarios (e.g., perishable cargo, weather-dependent routing, multi-customer SLAs). If you train a stronger driver on it, I'd love to see the numbers.
+Built solo for the **OpenEnv Hackathon (April 2026)**. OpenHaul is MIT-licensed and intentionally small — drop in a new task, swap in a different rubric atom, or wire it into your favorite RL stack. Pull requests welcome, especially new scenarios (e.g., perishable cargo, weather-dependent routing, multi-customer SLAs). If you train a stronger driver on it, I'd love to see the numbers.

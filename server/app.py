@@ -1,5 +1,5 @@
 """
-FastAPI app for Global Logistics Resolver (OpenEnv-compatible HTTP API).
+FastAPI app for OpenHaul (OpenEnv-compatible HTTP API).
 """
 from __future__ import annotations
 
@@ -22,7 +22,7 @@ from env import LogisticsEnv
 from models import LogisticsAction, LogisticsReward
 from tasks import LogisticsGrader, open_unit_score
 
-app = FastAPI(title="OpenEnv - Global Supply Chain & Logistics Resolver")
+app = FastAPI(title="OpenHaul — OpenEnv logistics API")
 
 env = LogisticsEnv()
 current_task_level = "easy"
@@ -33,7 +33,7 @@ _ROOT_PAGE_HTML = """<!DOCTYPE html>
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Global Logistics Resolver · OpenEnv API</title>
+  <title>OpenHaul · OpenEnv logistics API</title>
   <style>
     :root {
       --bg0: #0f172a;
@@ -169,8 +169,8 @@ _ROOT_PAGE_HTML = """<!DOCTYPE html>
   <div class="shell">
     <div class="card">
       <div class="badge"><span class="badge-dot"></span> Service online</div>
-      <h1>🚛 Global Logistics Resolver</h1>
-      <p class="sub">OpenEnv-compatible FastAPI — reset, step, and grade a multi-truck logistics simulator over HTTP.</p>
+      <h1>🚛 OpenHaul</h1>
+      <p class="sub">Break-glass logistics under disruption — OpenEnv-compatible FastAPI. Reset, step, and grade a multi-truck simulator over HTTP.</p>
       <div class="links">
         <a href="/docs"><span>OpenAPI &amp; try-it console</span><span class="path">/docs</span></a>
         <a href="/health"><span>Health check</span><span class="path">/health</span></a>
@@ -200,7 +200,7 @@ _ROOT_PAGE_HTML = """<!DOCTYPE html>
 async def root(request: Request):
     """Space iframe hits `/` — serve a tiny HTML shell; API under `/reset`, `/state`, `/step`, `/docs`."""
     if request.query_params.get("format") == "json":
-        return {"status": "ok", "service": "global-logistics-resolver", "docs": "/docs"}
+        return {"status": "ok", "service": "openhaul", "docs": "/docs"}
     return HTMLResponse(content=_ROOT_PAGE_HTML)
 
 

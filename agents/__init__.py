@@ -1,4 +1,4 @@
-"""Hierarchical multi-agent harness for the Global Logistics Resolver.
+"""Hierarchical multi-agent harness for OpenHaul.
 
 `Dispatcher` decomposes the mission into per-truck assignments under the same
 partial-observability rules as the single-agent baseline. `Driver` agents

@@ -1,6 +1,6 @@
-name: "global-logistics-resolver"
+name: "openhaul"
 version: "1.0.0"
-description: "Hierarchical multi-agent OpenEnv: partial-obs logistics sim with composable rubrics + TRL/LoRA + GRPO training pipeline."
+description: "OpenHaul — break-glass OpenEnv logistics: hierarchical multi-agent drivers, composable rubrics, TRL/LoRA + GRPO training pipeline."
 author: "Solo Warrior (Nikitha Thammaiah)"
 themes:
   - "long-horizon-planning"

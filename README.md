@@ -1,12 +1,12 @@
 ---
-title: OpenEnv Logistics
+title: OpenHaul
 emoji: 🚛
 colorFrom: blue
 colorTo: indigo
 sdk: docker
 app_port: 7860
 pinned: false
-short_description: "OpenEnv logistics: multi-agent sim, composable rubrics, TRL."
+short_description: "OpenHaul — break-glass OpenEnv logistics: multi-agent, rubrics, TRL."
 tags:
   - openenv
   - fastapi
@@ -17,7 +17,9 @@ tags:
   - trl
 ---
 
-# 🚛 Global Logistics Resolver — Hierarchical Multi-Agent OpenEnv
+# OpenHaul
+
+> *Break-glass logistics under disruption — OpenEnv multi-truck ops with partial observability.*
 
 > *"It's 2 AM, the N-E Highway is underwater, and the VIP client at East just called for an update. You have two trucks, a shrinking budget, and 18 hours to fix it. What's the move?"*
 
@@ -219,8 +221,8 @@ python test_local.py                        # easy / medium / hard scripted regr
 
 ### Docker / Hugging Face Spaces
 ```bash
-docker build -t logistics-resolver .
-docker run -p 7860:7860 logistics-resolver        # HF sets PORT automatically
+docker build -t openhaul .
+docker run -p 7860:7860 openhaul        # HF sets PORT automatically
 ```
 Space metadata follows the [Spaces configuration reference](https://huggingface.co/docs/hub/spaces-config-reference).
 
@@ -263,7 +265,7 @@ docker version          # should show Client + Server
 | `Blog.md`                        | Mini-blog writeup (separate from README; also used for HF Space validation).             |
 | `docs/blog_post.md`              | Short pointer to `Blog.md` (keeps a stable path for older links).                          |
 | `openenv.yaml`                   | OpenEnv leaderboard manifest.                                                              |
-| `pyproject.toml` / `uv.lock`     | Package metadata; `pip install ".[plots]"` adds matplotlib for local plot generation.      |
+| `pyproject.toml` / `uv.lock`     | Installable package **`openhaul`**; `pip install ".[plots]"` adds matplotlib for local plot generation.      |
 
 ---
 

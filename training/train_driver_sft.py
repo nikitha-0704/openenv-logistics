@@ -121,7 +121,7 @@ def _run_training(args) -> None:
     except ImportError as e:
         print(
             "Missing training deps. Install with:\n"
-            "  pip install 'global-logistics-resolver[train]'\n"
+            "  pip install 'openhaul[train]'\n"
             "or: pip install trl transformers peft accelerate datasets torch matplotlib",
             file=sys.stderr,
         )

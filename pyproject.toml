@@ -3,9 +3,9 @@ requires = ["setuptools>=61", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "global-logistics-resolver"
+name = "openhaul"
 version = "1.0.0"
-description = "High-stakes logistics simulator (OpenEnv) for SLA prioritization and routing."
+description = "OpenHaul — break-glass logistics under disruption: OpenEnv multi-truck sim with composable rubrics and TRL/GRPO training."
 readme = "README.md"
 requires-python = ">=3.10"
 dependencies = [

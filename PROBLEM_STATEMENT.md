@@ -1,4 +1,4 @@
-# Problem Statement & Design — Global Logistics Resolver (OpenEnv)
+# Problem Statement & Design — OpenHaul (OpenEnv)
 
 **Author:** Nikitha Thammaiah · Solo
 **Hackathon themes hit:**
