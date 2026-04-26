@@ -82,7 +82,7 @@ for name, child in rubric.named_rubrics():
 
 ## 6. Post-training / self-improvement strategy
 
-- **Training notebook (Colab + HF Jobs):** [`notebooks/train_driver_trl.ipynb`](notebooks/train_driver_trl.ipynb) collects trajectories from the live env, filters by terminal grader score (`>= 0.7`), runs **SFT + LoRA** on a small `Driver` model (default Qwen2.5-0.5B-Instruct on a T4), and writes `sft_loss_curve.png` plus a **baseline vs trained** bar chart of mean `/grader` score per task. A second cell promotes the **GRPO** loop using `GET /grader` directly as the reward function (deck-recommended pattern: training loop **connects to the environment**, not a static dataset).
+- **Training notebook (Colab):** [`notebooks/train_driver_trl.ipynb`](notebooks/train_driver_trl.ipynb) collects trajectories from the live env, filters by terminal grader score (`>= 0.7`), runs **SFT + LoRA** on a small `Driver` model (default Qwen2.5-0.5B-Instruct on a T4), and writes `sft_loss_curve.png` plus a **baseline vs trained** bar chart of mean `/grader` score per task. A second cell promotes the **GRPO** loop using `GET /grader` directly as the reward function (deck-recommended pattern: training loop **connects to the environment**, not a static dataset).
 - **Improvement-evidence pipeline:** `python -m training.collect_and_plot --seeds N [--llm]` runs scripted, single-agent, and multi-agent rollouts, writes `docs/plots/rollout_summary.json`, and renders `docs/plots/baseline_vs_multi.png`.
 - **Episodic memory tail:** Both harnesses inject the last few graded `[END]` summaries into the next system prompt; useful for before/after ablations and "self-generated data" framing from the deck.
 
@@ -112,14 +112,3 @@ bash scripts/demo.sh
 ```
 
 ---
-
-## 8. How this maps to the judging criteria
-
-| Weight | Criterion                          | Where it shows up                                                                                                                            |
-| ------ | ---------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
-| 40%    | Environment Innovation             | Hierarchical multi-agent + inter-agent bus + re-plan trigger + adversarial events + partial observability + composable `openenv.core.Rubric` atoms |
-| 30%    | Storytelling & Presentation        | README pitch + embedded plot captions + push-button `scripts/demo.sh` + slide deck / mini-blog (linked from README)                          |
-| 20%    | Showing Improvement in Rewards     | `docs/plots/baseline_vs_multi.png` (scripted vs single vs multi LLM) + `docs/plots/sft_loss_curve.png` + `docs/plots/baseline_vs_trained_grader.png` |
-| 10%    | Reward & Training Pipeline         | Composable rubrics with named atoms + filtered SFT + GRPO using `/grader` as reward + grader-introspection hooks                              |
-
-*This document satisfies the hackathon brief: problem, environment, capabilities, tasks, reward/evaluation, and post-training/self-improvement narrative.*
